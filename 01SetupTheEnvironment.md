@@ -1,10 +1,10 @@
 # Set up the environment
-## Download and install the .NET Core SDK [here](https://dotnet.microsoft.com/download/dotnet-core)
+### Download and install the .NET Core SDK [here](https://dotnet.microsoft.com/download/dotnet-core)
 To check that the insatallation is successful, run:
 ```Dos
 dotnet --info
 ``` 
-## Download and install Node
+### Download and install Node
 to check if the Node installed correctly:
 ```Dos
 node --version
@@ -21,10 +21,10 @@ or switch between versions of Node by:
 ```Dos
 nvm use v8.11.2
 ```
-## Download and install Git and VSCode
-## Install the following extensions in VSCode:
+### Download and install Git and VSCode
+### Install the following extensions in VSCode:
 * Auto Close Tag
-* Auto Imort
+* Auto Import
 * Auto Rename Tag
 * Bracket Pair Colorizer 2
 * C# (Essential)
