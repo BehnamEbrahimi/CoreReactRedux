@@ -6,7 +6,6 @@ export interface IStore {
   activity: {
     activities: IActivity[];
     selectedActivity: IActivity | undefined;
-    activityRegistry: Map<string, IActivity>;
     editMode: boolean;
     loadingInitial: boolean;
     submitting: boolean;

@@ -5,38 +5,42 @@ import { ActionTypes } from './types';
 import { IActivity } from '../models/activity';
 
 export type IActivityAction =
-  | IFetchActivitiesAction
+  | ILoadActivitiesAction
   | ICreateActivityAction
   | IEditActivityAction
   | IDeleteActivityAction
   | ISelectActivityAction
   | IOpenCreateFormAction
   | ISetEditModeAction
-  | ISetLoadingAction
+  | ISetLoadingInitialAction
   | ISetSubmittingAction
   | ISetTargetAction;
 
-// Fetch Activities
-export type IFetchActivities = () => void;
-export interface IFetchActivitiesAction {
-  type: ActionTypes.fetchActivities;
+// Load Activities
+export type ILoadActivities = () => void;
+export interface ILoadActivitiesAction {
+  type: ActionTypes.loadActivities;
   payload: IActivity[];
 }
-export const fetchActivities = () => async (dispatch: Dispatch) => {
-  dispatch(setLoading(true));
+export const loadActivities = () => async (dispatch: Dispatch) => {
+  dispatch(setLoadingInitial(true));
 
-  const activities = await agent.Activities.list();
+  try {
+    const activities = await agent.Activities.list();
 
-  activities.forEach(activity => {
-    activity.date = activity.date.split('.')[0];
-  });
+    activities.forEach(activity => {
+      activity.date = activity.date.split('.')[0];
+    });
 
-  dispatch<IFetchActivitiesAction>({
-    type: ActionTypes.fetchActivities,
-    payload: activities
-  });
-
-  dispatch(setLoading(false));
+    dispatch<ILoadActivitiesAction>({
+      type: ActionTypes.loadActivities,
+      payload: activities
+    });
+    dispatch(setLoadingInitial(false));
+  } catch (ex) {
+    console.log(ex);
+    dispatch(setLoadingInitial(false));
+  }
 };
 
 // Create Activity
@@ -51,15 +55,20 @@ export const createActivity = (newActivity: IActivity) => async (
   dispatch(setSubmitting(true));
   dispatch(setTarget('submit'));
 
-  await agent.Activities.create(newActivity);
+  try {
+    await agent.Activities.create(newActivity);
 
-  dispatch<ICreateActivityAction>({
-    type: ActionTypes.createActivity,
-    payload: newActivity
-  });
-
-  dispatch(setSubmitting(false));
-  dispatch(setTarget(''));
+    dispatch<ICreateActivityAction>({
+      type: ActionTypes.createActivity,
+      payload: newActivity
+    });
+    dispatch(setSubmitting(false));
+    dispatch(setTarget(''));
+  } catch (ex) {
+    console.log(ex);
+    dispatch(setSubmitting(false));
+    dispatch(setTarget(''));
+  }
 };
 
 // Edit Activity
@@ -74,15 +83,20 @@ export const editActivity = (id: string, updatedActivity: IActivity) => async (
   dispatch(setSubmitting(true));
   dispatch(setTarget('submit'));
 
-  await agent.Activities.update(updatedActivity);
+  try {
+    await agent.Activities.update(updatedActivity);
 
-  dispatch<IEditActivityAction>({
-    type: ActionTypes.editActivity,
-    payload: { id, updatedActivity }
-  });
-
-  dispatch(setSubmitting(false));
-  dispatch(setTarget(''));
+    dispatch<IEditActivityAction>({
+      type: ActionTypes.editActivity,
+      payload: { id, updatedActivity }
+    });
+    dispatch(setSubmitting(false));
+    dispatch(setTarget(''));
+  } catch (ex) {
+    console.log(ex);
+    dispatch(setSubmitting(false));
+    dispatch(setTarget(''));
+  }
 };
 
 // Delete Activity
@@ -95,15 +109,20 @@ export const deleteActivity = (id: string) => async (dispatch: Dispatch) => {
   dispatch(setSubmitting(true));
   dispatch(setTarget(id));
 
-  await agent.Activities.delete(id);
+  try {
+    await agent.Activities.delete(id);
 
-  dispatch<IDeleteActivityAction>({
-    type: ActionTypes.deleteActivity,
-    payload: id
-  });
-
-  dispatch(setSubmitting(false));
-  dispatch(setTarget(''));
+    dispatch<IDeleteActivityAction>({
+      type: ActionTypes.deleteActivity,
+      payload: id
+    });
+    dispatch(setSubmitting(false));
+    dispatch(setTarget(''));
+  } catch (ex) {
+    console.log(ex);
+    dispatch(setSubmitting(false));
+    dispatch(setTarget(''));
+  }
 };
 
 // Select Activity
@@ -138,14 +157,16 @@ export const setEditMode = (editMode: boolean): ISetEditModeAction => ({
 });
 
 // Set Loading
-export type ISetLoading = (loading: boolean) => void;
-export interface ISetLoadingAction {
-  type: ActionTypes.setLoading;
+export type ISetLoadingInitial = (loadingInitial: boolean) => void;
+export interface ISetLoadingInitialAction {
+  type: ActionTypes.setLoadingInitial;
   payload: boolean;
 }
-export const setLoading = (loading: boolean): ISetLoadingAction => ({
-  type: ActionTypes.setLoading,
-  payload: loading
+export const setLoadingInitial = (
+  loadingInitial: boolean
+): ISetLoadingInitialAction => ({
+  type: ActionTypes.setLoadingInitial,
+  payload: loadingInitial
 });
 
 // Set Submitting

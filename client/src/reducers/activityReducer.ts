@@ -1,10 +1,10 @@
 import { IStore } from './index';
 import { IActivityAction, ActionTypes } from '../actions';
+import { orderByDate } from '../utils/orderByDate';
 
 const initialState: IStore['activity'] = {
   activities: [],
   selectedActivity: undefined,
-  activityRegistry: new Map(),
   editMode: false,
   loadingInitial: false,
   submitting: false,
@@ -16,8 +16,8 @@ export default function(
   action: IActivityAction
 ) {
   switch (action.type) {
-    case ActionTypes.fetchActivities:
-      return { ...state, activities: action.payload };
+    case ActionTypes.loadActivities:
+      return { ...state, activities: orderByDate(action.payload) };
 
     case ActionTypes.selectActivity:
       return {
@@ -31,7 +31,7 @@ export default function(
     case ActionTypes.createActivity:
       return {
         ...state,
-        activities: [...state.activities, action.payload],
+        activities: orderByDate([...state.activities, action.payload]),
         selectedActivity: action.payload,
         editMode: false
       };
@@ -39,12 +39,12 @@ export default function(
     case ActionTypes.editActivity:
       return {
         ...state,
-        activities: [
+        activities: orderByDate([
           ...state.activities.filter(
             activity => activity.id !== action.payload.id
           ),
           action.payload.updatedActivity
-        ],
+        ]),
         selectedActivity: action.payload.updatedActivity,
         editMode: false
       };
@@ -62,7 +62,7 @@ export default function(
     case ActionTypes.setEditMode:
       return { ...state, editMode: action.payload };
 
-    case ActionTypes.setLoading:
+    case ActionTypes.setLoadingInitial:
       return { ...state, loadingInitial: action.payload };
 
     case ActionTypes.setSubmitting:

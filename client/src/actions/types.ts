@@ -1,12 +1,12 @@
 export enum ActionTypes {
-  fetchActivities = 'fetchActivities',
+  loadActivities = 'loadActivities',
   selectActivity = 'selectActivity',
   createActivity = 'createActivity',
   editActivity = 'editActivity',
   deleteActivity = 'deleteActivity',
   openCreateForm = 'openCreateForm',
   setEditMode = 'setEditMode',
-  setLoading = 'setLoading',
+  setLoadingInitial = 'setLoadingInitial',
   setSubmitting = 'setSubmitting',
   setTarget = 'setTarget'
 }

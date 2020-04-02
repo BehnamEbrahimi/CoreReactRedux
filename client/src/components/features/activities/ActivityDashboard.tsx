@@ -7,30 +7,30 @@ import ActivityDetails from './ActivityDetails';
 import ActivityForm from './ActivityForm';
 import Loading from '../../layout/Loading';
 import { IActivity } from '../../../models/activity';
-import { fetchActivities, IFetchActivities } from '../../../actions';
+import { loadActivities, ILoadActivities } from '../../../actions';
 import { IStore } from '../../../reducers';
 
 interface IProps {
-  fetchActivities: IFetchActivities;
+  loadActivities: ILoadActivities;
   selectedActivity: IActivity | undefined;
   editMode: boolean;
-  loading: boolean;
+  loadingInitial: boolean;
 }
 
 const ActivityDashboard: React.FC<IProps> = ({
-  fetchActivities,
+  loadActivities,
   selectedActivity,
   editMode,
-  loading
+  loadingInitial
 }) => {
   useEffect(() => {
-    fetchActivities();
-  }, [fetchActivities]);
+    loadActivities();
+  }, [loadActivities]);
 
   return (
     <Grid>
       <Grid.Column width={10}>
-        {loading ? <Loading /> : <ActivityList />}
+        {loadingInitial ? <Loading /> : <ActivityList />}
       </Grid.Column>
       <Grid.Column width={6}>
         {selectedActivity && !editMode && <ActivityDetails />}
@@ -48,9 +48,9 @@ const mapStateToProps = ({
 }: IStore): {
   selectedActivity: IActivity | undefined;
   editMode: boolean;
-  loading: boolean;
+  loadingInitial: boolean;
 } => {
-  return { selectedActivity, editMode, loading: loadingInitial };
+  return { selectedActivity, editMode, loadingInitial };
 };
 
-export default connect(mapStateToProps, { fetchActivities })(ActivityDashboard);
+export default connect(mapStateToProps, { loadActivities })(ActivityDashboard);
