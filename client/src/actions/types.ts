@@ -1,8 +1,12 @@
-import { IFetchValueAction, IDeleteValueAction } from './values';
-
 export enum ActionTypes {
-  fetchValues = 'fetchValues',
-  deleteValue = 'deleteValue'
+  fetchActivities = 'fetchActivities',
+  selectActivity = 'selectActivity',
+  createActivity = 'createActivity',
+  editActivity = 'editActivity',
+  deleteActivity = 'deleteActivity',
+  openCreateForm = 'openCreateForm',
+  setEditMode = 'setEditMode',
+  setLoading = 'setLoading',
+  setSubmitting = 'setSubmitting',
+  setTarget = 'setTarget'
 }
-
-export type IAction = IFetchValueAction | IDeleteValueAction;

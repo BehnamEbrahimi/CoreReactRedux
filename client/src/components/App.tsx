@@ -1,40 +1,18 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { Header, Icon, List } from 'semantic-ui-react';
-import { IValue } from '../models/value';
-import { fetchValues, deleteValue } from '../actions';
-import { IStore } from '../reducers';
+import React, { Fragment } from 'react';
+import { Container } from 'semantic-ui-react';
 
-interface IProps {
-  values: IValue[];
-  fetchValues: Function;
-  deleteValue: Function;
-}
+import Navbar from './features/nav/Navbar';
+import ActivityDashboard from './features/activities/ActivityDashboard';
 
-const App: React.FC<IProps> = ({ values, fetchValues, deleteValue }) => {
-  useEffect(() => {
-    fetchValues();
-  }, [fetchValues]);
-
+const App: React.FC = () => {
   return (
-    <div>
-      <Header as="h2">
-        <Icon name="users" />
-        <Header.Content>CRR</Header.Content>
-      </Header>
-      <List>
-        {values.map(value => (
-          <List.Item key={value.id} onClick={() => deleteValue(value.id)}>
-            {value.name}
-          </List.Item>
-        ))}
-      </List>
-    </div>
+    <Fragment>
+      <Navbar />
+      <Container style={{ marginTop: '7em' }}>
+        <ActivityDashboard />
+      </Container>
+    </Fragment>
   );
 };
 
-const mapStateToProps = ({ values }: IStore): { values: IValue[] } => {
-  return { values };
-};
-
-export default connect(mapStateToProps, { fetchValues, deleteValue })(App);
+export default App;
