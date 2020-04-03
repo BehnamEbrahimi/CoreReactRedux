@@ -1,6 +1,5 @@
 import { IStore } from './index';
 import { IActivityAction, ActionTypes } from '../actions';
-import { orderByDate } from '../utils/orderByDate';
 
 const initialState: IStore['activity'] = {
   activities: [],
@@ -16,7 +15,7 @@ export default function(
 ) {
   switch (action.type) {
     case ActionTypes.loadActivities:
-      return { ...state, activities: orderByDate(action.payload) };
+      return { ...state, activities: action.payload };
 
     case ActionTypes.loadActivity:
       return {
@@ -33,18 +32,18 @@ export default function(
     case ActionTypes.createActivity:
       return {
         ...state,
-        activities: orderByDate([...state.activities, action.payload])
+        activities: [...state.activities, action.payload]
       };
 
     case ActionTypes.editActivity:
       return {
         ...state,
-        activities: orderByDate([
+        activities: [
           ...state.activities.filter(
             activity => activity.id !== action.payload.id
           ),
           action.payload.updatedActivity
-        ]),
+        ],
         activity: action.payload.updatedActivity
       };
 

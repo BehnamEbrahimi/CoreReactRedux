@@ -1,73 +1,41 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Item, Button, Label, Segment } from 'semantic-ui-react';
+import { Item, Label } from 'semantic-ui-react';
 
+import ActivityListItem from './ActivityListItem';
 import { IActivity } from '../../../models/activity';
-import { deleteActivity, IDeleteActivity } from '../../../actions';
 import { IStore } from '../../../reducers';
+import { groupActivitiesByDate } from '../../../utils/groupActivitiesByDate';
 
 interface IProps {
-  deleteActivity: IDeleteActivity;
   activities: IActivity[];
-  submitting: boolean;
-  target: string;
 }
 
-const ActivityList: React.FC<IProps> = ({
-  deleteActivity,
-  activities,
-  submitting,
-  target
-}) => {
+const ActivityList: React.FC<IProps> = ({ activities }) => {
   return (
-    <Segment clearing>
-      <Item.Group divided>
-        {activities.map(activity => (
-          <Item key={activity.id}>
-            <Item.Content>
-              <Item.Header as="a">{activity.title}</Item.Header>
-              <Item.Meta>{activity.date}</Item.Meta>
-              <Item.Description>
-                <div>{activity.description}</div>
-                <div>
-                  {activity.city}, {activity.venue}
-                </div>
-              </Item.Description>
-              <Item.Extra>
-                <Button
-                  as={Link}
-                  to={`/activities/${activity.id}`}
-                  content="View"
-                  color="blue"
-                />
-                <Button
-                  onClick={() => deleteActivity(activity.id)}
-                  floated="right"
-                  content="Delete"
-                  color="red"
-                  loading={submitting && target === activity.id}
-                />
-                <Label basic content={activity.category} />
-              </Item.Extra>
-            </Item.Content>
-          </Item>
-        ))}
-      </Item.Group>
-    </Segment>
+    <Fragment>
+      {groupActivitiesByDate(activities).map(([date, activitiesInEachDate]) => (
+        <Fragment key={date}>
+          <Label size="large" color="blue">
+            {date}
+          </Label>
+          <Item.Group divided>
+            {activitiesInEachDate.map(activity => (
+              <ActivityListItem key={activity.id} activity={activity} />
+            ))}
+          </Item.Group>
+        </Fragment>
+      ))}
+    </Fragment>
   );
 };
 
 const mapStateToProps = ({
-  activity: { activities, submitting, target }
+  activity: { activities }
 }: IStore): {
   activities: IActivity[];
-  submitting: boolean;
-  target: string;
 } => {
-  return { activities, submitting, target };
+  return { activities };
 };
 
-export default connect(mapStateToProps, {
-  deleteActivity
-})(ActivityList);
+export default connect(mapStateToProps, {})(ActivityList);
