@@ -1,27 +1,47 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Card, Image, Button } from 'semantic-ui-react';
 
+import Loading from '../../layout/Loading';
 import { IActivity } from '../../../models/activity';
 import {
-  selectActivity,
-  setEditMode,
-  ISetEditMode,
-  ISelectActivity
+  loadActivity,
+  ILoadActivity,
+  clearActivity,
+  IClearActivity
 } from '../../../actions';
 import { IStore } from '../../../reducers';
 
 interface IProps {
+  loadActivity: ILoadActivity;
+  clearActivity: IClearActivity;
   activity: IActivity;
-  setEditMode: ISetEditMode;
-  selectActivity: ISelectActivity;
+  loadingInitial: boolean;
 }
 
-const ActivityDetails: React.FC<IProps> = ({
+interface DetailParams {
+  id: string;
+}
+
+const ActivityDetails: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
+  loadActivity,
+  clearActivity,
   activity,
-  setEditMode,
-  selectActivity
+  loadingInitial,
+  match,
+  history
 }) => {
+  useEffect(() => {
+    loadActivity(match.params.id);
+
+    // when this component is unmounted, the activity will be cleared
+    return () => clearActivity();
+  }, [loadActivity, match.params.id, clearActivity]);
+
+  if (loadingInitial || !activity)
+    return <Loading content="Loading activity..." />;
+
   return (
     <Card fluid>
       <Image
@@ -39,13 +59,15 @@ const ActivityDetails: React.FC<IProps> = ({
       <Card.Content extra>
         <Button.Group widths={2}>
           <Button
-            onClick={() => setEditMode(true)}
+            as={Link}
+            to={`/manage/${activity.id}`}
             basic
             color="blue"
             content="Edit"
           />
           <Button
-            onClick={() => selectActivity('')}
+            as={Link}
+            to={'/activities'}
             basic
             color="grey"
             content="Cancel"
@@ -57,12 +79,12 @@ const ActivityDetails: React.FC<IProps> = ({
 };
 
 const mapStateToProps = ({
-  activity: { selectedActivity }
-}: IStore): { activity: IActivity } => {
-  return { activity: selectedActivity! };
+  activity: { activity, loadingInitial }
+}: IStore): { activity: IActivity; loadingInitial: boolean } => {
+  return { activity: activity!, loadingInitial };
 };
 
 export default connect(mapStateToProps, {
-  selectActivity,
-  setEditMode
+  loadActivity,
+  clearActivity
 })(ActivityDetails);

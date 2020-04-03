@@ -2,16 +2,17 @@ import { Dispatch } from 'redux';
 
 import agent from '../apis/agent';
 import { ActionTypes } from './types';
+import { History } from 'history';
 import { IActivity } from '../models/activity';
+import { IStore } from './../reducers/index';
 
 export type IActivityAction =
   | ILoadActivitiesAction
+  | ILoadActivityAction
+  | IClearActivityAction
   | ICreateActivityAction
   | IEditActivityAction
   | IDeleteActivityAction
-  | ISelectActivityAction
-  | IOpenCreateFormAction
-  | ISetEditModeAction
   | ISetLoadingInitialAction
   | ISetSubmittingAction
   | ISetTargetAction;
@@ -43,15 +44,65 @@ export const loadActivities = () => async (dispatch: Dispatch) => {
   }
 };
 
+// Load Activity
+export type ILoadActivity = (id: string) => void;
+export interface ILoadActivityAction {
+  type: ActionTypes.loadActivity;
+  payload: IActivity;
+}
+export const loadActivity = (id: string) => async (
+  dispatch: Dispatch,
+  getState: () => IStore
+) => {
+  const activity = getState().activity.activities.find(
+    activity => activity.id === id
+  );
+  if (activity) {
+    dispatch<ILoadActivityAction>({
+      type: ActionTypes.loadActivity,
+      payload: activity
+    });
+  } else {
+    dispatch(setLoadingInitial(true));
+    try {
+      const activity = await agent.Activities.details(id);
+
+      activity.date = activity.date.split('.')[0];
+
+      dispatch<ILoadActivityAction>({
+        type: ActionTypes.loadActivity,
+        payload: activity
+      });
+      dispatch(setLoadingInitial(false));
+    } catch (ex) {
+      console.log(ex);
+      dispatch(setLoadingInitial(false));
+    }
+  }
+};
+
+// Clear Activity
+export type IClearActivity = () => void;
+export interface IClearActivityAction {
+  type: ActionTypes.clearActivity;
+}
+export const clearActivity = (): IClearActivityAction => ({
+  type: ActionTypes.clearActivity
+});
+
 // Create Activity
-export type ICreateActivity = (newActivity: IActivity) => void;
+export type ICreateActivity = (
+  newActivity: IActivity,
+  history: History
+) => void;
 export interface ICreateActivityAction {
   type: ActionTypes.createActivity;
   payload: IActivity;
 }
-export const createActivity = (newActivity: IActivity) => async (
-  dispatch: Dispatch
-) => {
+export const createActivity = (
+  newActivity: IActivity,
+  history: History
+) => async (dispatch: Dispatch) => {
   dispatch(setSubmitting(true));
   dispatch(setTarget('submit'));
 
@@ -64,6 +115,8 @@ export const createActivity = (newActivity: IActivity) => async (
     });
     dispatch(setSubmitting(false));
     dispatch(setTarget(''));
+
+    history.push(`/activities/${newActivity.id}`);
   } catch (ex) {
     console.log(ex);
     dispatch(setSubmitting(false));
@@ -72,14 +125,20 @@ export const createActivity = (newActivity: IActivity) => async (
 };
 
 // Edit Activity
-export type IEditActivity = (id: string, updatedActivity: IActivity) => void;
+export type IEditActivity = (
+  id: string,
+  updatedActivity: IActivity,
+  history: any
+) => void;
 export interface IEditActivityAction {
   type: ActionTypes.editActivity;
   payload: { id: string; updatedActivity: IActivity };
 }
-export const editActivity = (id: string, updatedActivity: IActivity) => async (
-  dispatch: Dispatch
-) => {
+export const editActivity = (
+  id: string,
+  updatedActivity: IActivity,
+  history: any
+) => async (dispatch: Dispatch) => {
   dispatch(setSubmitting(true));
   dispatch(setTarget('submit'));
 
@@ -92,6 +151,8 @@ export const editActivity = (id: string, updatedActivity: IActivity) => async (
     });
     dispatch(setSubmitting(false));
     dispatch(setTarget(''));
+
+    history.push(`/activities/${updatedActivity.id}`);
   } catch (ex) {
     console.log(ex);
     dispatch(setSubmitting(false));
@@ -124,37 +185,6 @@ export const deleteActivity = (id: string) => async (dispatch: Dispatch) => {
     dispatch(setTarget(''));
   }
 };
-
-// Select Activity
-export type ISelectActivity = (id: string) => void;
-export interface ISelectActivityAction {
-  type: ActionTypes.selectActivity;
-  payload: string;
-}
-export const selectActivity = (id: string): ISelectActivityAction => ({
-  type: ActionTypes.selectActivity,
-  payload: id
-});
-
-// Open Create Form
-export type IOpenCreateForm = () => void;
-export interface IOpenCreateFormAction {
-  type: ActionTypes.openCreateForm;
-}
-export const openCreateForm = (): IOpenCreateFormAction => ({
-  type: ActionTypes.openCreateForm
-});
-
-// Set Edit Mode
-export type ISetEditMode = (editMode: boolean) => void;
-export interface ISetEditModeAction {
-  type: ActionTypes.setEditMode;
-  payload: boolean;
-}
-export const setEditMode = (editMode: boolean): ISetEditModeAction => ({
-  type: ActionTypes.setEditMode,
-  payload: editMode
-});
 
 // Set Loading
 export type ISetLoadingInitial = (loadingInitial: boolean) => void;

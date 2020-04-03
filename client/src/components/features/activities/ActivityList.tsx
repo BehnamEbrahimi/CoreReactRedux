@@ -1,30 +1,24 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Item, Button, Label, Segment } from 'semantic-ui-react';
 
 import { IActivity } from '../../../models/activity';
-import {
-  selectActivity,
-  deleteActivity,
-  ISelectActivity,
-  IDeleteActivity
-} from '../../../actions';
+import { deleteActivity, IDeleteActivity } from '../../../actions';
 import { IStore } from '../../../reducers';
 
 interface IProps {
+  deleteActivity: IDeleteActivity;
   activities: IActivity[];
   submitting: boolean;
   target: string;
-  selectActivity: ISelectActivity;
-  deleteActivity: IDeleteActivity;
 }
 
 const ActivityList: React.FC<IProps> = ({
+  deleteActivity,
   activities,
   submitting,
-  target,
-  selectActivity,
-  deleteActivity
+  target
 }) => {
   return (
     <Segment clearing>
@@ -42,8 +36,8 @@ const ActivityList: React.FC<IProps> = ({
               </Item.Description>
               <Item.Extra>
                 <Button
-                  onClick={() => selectActivity(activity.id)}
-                  floated="right"
+                  as={Link}
+                  to={`/activities/${activity.id}`}
                   content="View"
                   color="blue"
                 />
@@ -75,6 +69,5 @@ const mapStateToProps = ({
 };
 
 export default connect(mapStateToProps, {
-  selectActivity,
   deleteActivity
 })(ActivityList);

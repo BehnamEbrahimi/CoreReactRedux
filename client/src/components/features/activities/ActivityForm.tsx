@@ -1,73 +1,97 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
+import { RouteComponentProps, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Segment, Form, Button } from 'semantic-ui-react';
 import { v4 as uuid } from 'uuid';
 
 import { IActivity } from '../../../models/activity';
 import {
-  setEditMode,
+  loadActivity,
+  ILoadActivity,
   createActivity,
-  editActivity,
-  ISetEditMode,
   ICreateActivity,
-  IEditActivity
+  editActivity,
+  IEditActivity,
+  clearActivity,
+  IClearActivity
 } from '../../../actions';
 import { IStore } from '../../../reducers';
 
 interface IProps {
-  initialFormState: IActivity | undefined;
-  submitting: boolean;
-  target: string;
-  setEditMode: ISetEditMode;
+  loadActivity: ILoadActivity;
   createActivity: ICreateActivity;
   editActivity: IEditActivity;
+  clearActivity: IClearActivity;
+  activity: IActivity | undefined;
+  submitting: boolean;
+  target: string;
 }
 
-const ActivityForm: React.FC<IProps> = ({
-  initialFormState,
+interface DetailParams {
+  id: string;
+}
+
+const ActivityForm: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
+  loadActivity,
+  clearActivity,
+  createActivity,
+  editActivity,
+  activity,
   submitting,
   target,
-  setEditMode,
-  createActivity,
-  editActivity
+  match,
+  history
 }) => {
-  const initializeForm = (): IActivity => {
-    if (initialFormState) {
-      return initialFormState;
-    } else {
-      return {
-        id: '',
-        title: '',
-        category: '',
-        description: '',
-        date: '',
-        city: '',
-        venue: ''
-      };
-    }
+  const emptyForm = {
+    id: '',
+    title: '',
+    category: '',
+    description: '',
+    date: '',
+    city: '',
+    venue: ''
   };
+  const [formData, setFormData] = useState<IActivity>(emptyForm);
 
-  const [activity, setActivity] = useState<IActivity>(initializeForm());
+  useEffect(() => {
+    if (match.params.id && !activity) {
+      loadActivity(match.params.id);
+    }
+
+    if (!match.params.id) {
+      setFormData(emptyForm);
+    }
+
+    // when this component is unmounted, the activity will be cleared
+    return () => clearActivity();
+
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    if (match.params.id && activity) {
+      setFormData(activity);
+    }
+  }, [activity, match.params.id]);
 
   const handleInputChange = (
     event: FormEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.currentTarget;
-    setActivity({ ...activity, [name]: value });
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = () => {
-    if (activity.id.length === 0) {
+    if (formData.id.length === 0) {
       let newActivity = {
-        ...activity,
+        ...formData,
         id: uuid()
       };
-      createActivity(newActivity);
+      createActivity(newActivity, history);
     } else {
-      editActivity(activity.id, activity);
+      editActivity(formData.id, formData, history);
     }
   };
-
   return (
     <Segment clearing>
       <Form onSubmit={handleSubmit}>
@@ -75,39 +99,39 @@ const ActivityForm: React.FC<IProps> = ({
           onChange={handleInputChange}
           name="title"
           placeholder="Title"
-          value={activity.title}
+          value={formData.title}
         />
         <Form.TextArea
           onChange={handleInputChange}
           name="description"
           rows={2}
           placeholder="Description"
-          value={activity.description}
+          value={formData.description}
         />
         <Form.Input
           onChange={handleInputChange}
           name="category"
           placeholder="Category"
-          value={activity.category}
+          value={formData.category}
         />
         <Form.Input
           onChange={handleInputChange}
           name="date"
           type="datetime-local"
           placeholder="Date"
-          value={activity.date}
+          value={formData.date}
         />
         <Form.Input
           onChange={handleInputChange}
           name="city"
           placeholder="City"
-          value={activity.city}
+          value={formData.city}
         />
         <Form.Input
           onChange={handleInputChange}
           name="venue"
           placeholder="Venue"
-          value={activity.venue}
+          value={formData.venue}
         />
         <Button
           floated="right"
@@ -117,7 +141,8 @@ const ActivityForm: React.FC<IProps> = ({
           loading={submitting && target === 'submit'}
         />
         <Button
-          onClick={() => setEditMode(false)}
+          as={Link}
+          to={'/activities'}
           floated="right"
           type="button"
           content="Cancel"
@@ -128,17 +153,18 @@ const ActivityForm: React.FC<IProps> = ({
 };
 
 const mapStateToProps = ({
-  activity: { selectedActivity, submitting, target }
+  activity: { activity, submitting, target }
 }: IStore): {
-  initialFormState: IActivity | undefined;
+  activity: IActivity | undefined;
   submitting: boolean;
   target: string;
 } => {
-  return { initialFormState: selectedActivity, submitting, target };
+  return { activity, submitting, target };
 };
 
 export default connect(mapStateToProps, {
-  setEditMode,
+  loadActivity,
   createActivity,
-  editActivity
+  editActivity,
+  clearActivity
 })(ActivityForm);

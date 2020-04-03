@@ -4,8 +4,7 @@ import { orderByDate } from '../utils/orderByDate';
 
 const initialState: IStore['activity'] = {
   activities: [],
-  selectedActivity: undefined,
-  editMode: false,
+  activity: undefined,
   loadingInitial: false,
   submitting: false,
   target: ''
@@ -19,21 +18,22 @@ export default function(
     case ActionTypes.loadActivities:
       return { ...state, activities: orderByDate(action.payload) };
 
-    case ActionTypes.selectActivity:
+    case ActionTypes.loadActivity:
       return {
         ...state,
-        selectedActivity: state.activities.find(
-          activity => activity.id === action.payload
-        ),
-        editMode: false
+        activity: action.payload
+      };
+
+    case ActionTypes.clearActivity:
+      return {
+        ...state,
+        activity: undefined
       };
 
     case ActionTypes.createActivity:
       return {
         ...state,
-        activities: orderByDate([...state.activities, action.payload]),
-        selectedActivity: action.payload,
-        editMode: false
+        activities: orderByDate([...state.activities, action.payload])
       };
 
     case ActionTypes.editActivity:
@@ -45,8 +45,7 @@ export default function(
           ),
           action.payload.updatedActivity
         ]),
-        selectedActivity: action.payload.updatedActivity,
-        editMode: false
+        activity: action.payload.updatedActivity
       };
 
     case ActionTypes.deleteActivity:
@@ -55,12 +54,6 @@ export default function(
       );
 
       return { ...state, activities: filteredActivities };
-
-    case ActionTypes.openCreateForm:
-      return { ...state, selectedActivity: undefined, editMode: true };
-
-    case ActionTypes.setEditMode:
-      return { ...state, editMode: action.payload };
 
     case ActionTypes.setLoadingInitial:
       return { ...state, loadingInitial: action.payload };

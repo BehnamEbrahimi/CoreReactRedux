@@ -1,24 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import { Menu, Container, Button } from 'semantic-ui-react';
-import { openCreateForm, IOpenCreateForm } from '../../../actions';
 
-interface IProps {
-  openCreateForm: IOpenCreateForm;
-}
-
-const Navbar: React.FC<IProps> = ({ openCreateForm }) => {
+const Navbar: React.FC = () => {
   return (
     <Menu fixed="top" inverted>
       <Container>
-        <Menu.Item header>
+        <Menu.Item header as={NavLink} exact to="/">
           <img src="/assets/logo.png" alt="logo" style={{ marginRight: 10 }} />
           CRR
         </Menu.Item>
-        <Menu.Item name="Activities" />
+        <Menu.Item name="Activities" as={NavLink} to="/activities" />
         <Menu.Item>
           <Button
-            onClick={e => openCreateForm()}
+            as={NavLink}
+            to="/createActivity"
             positive
             content="Create Activity"
           />
@@ -28,6 +24,4 @@ const Navbar: React.FC<IProps> = ({ openCreateForm }) => {
   );
 };
 
-export default connect(null, {
-  openCreateForm
-})(Navbar);
+export default Navbar;
