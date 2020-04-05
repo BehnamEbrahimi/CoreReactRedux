@@ -1,5 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Segment, Item, Header, Button, Image } from "semantic-ui-react";
+import { format } from "date-fns";
 import { IActivity } from "../../../models/activity";
 
 const activityImageStyle = {
@@ -35,7 +37,7 @@ const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
                   content={activity.title}
                   style={{ color: "white" }}
                 />
-                <p>{activity.date}</p>
+                <p>{format(activity.date, "eeee do MMM")}</p>
                 <p>
                   Hosted by <strong>Bob</strong>
                 </p>
@@ -47,7 +49,12 @@ const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
       <Segment clearing attached="bottom">
         <Button color="teal">Join Activity</Button>
         <Button>Cancel attendance</Button>
-        <Button color="orange" floated="right">
+        <Button
+          as={Link}
+          to={`/manage/${activity.id}`}
+          color="orange"
+          floated="right"
+        >
           Manage Event
         </Button>
       </Segment>

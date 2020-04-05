@@ -9,17 +9,11 @@ import ActivityDetailedInfo from "./ActivityDetailedInfo";
 import ActivityDetailedChat from "./ActivityDetailedChat";
 import ActivityDetailedSidebar from "./ActivityDetailedSidebar";
 import { IActivity } from "../../../models/activity";
-import {
-  loadActivity,
-  ILoadActivity,
-  clearActivity,
-  IClearActivity,
-} from "../../../actions";
+import { loadActivity, ILoadActivity } from "../../../actions";
 import { IStore } from "../../../reducers";
 
 interface IProps {
   loadActivity: ILoadActivity;
-  clearActivity: IClearActivity;
   activity: IActivity;
   loadingInitial: boolean;
 }
@@ -30,17 +24,13 @@ interface DetailParams {
 
 const ActivityDetails: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
   loadActivity,
-  clearActivity,
   activity,
   loadingInitial,
   match,
 }) => {
   useEffect(() => {
     loadActivity(match.params.id);
-
-    // when this component is unmounted, the activity will be cleared
-    return () => clearActivity();
-  }, [loadActivity, match.params.id, clearActivity]);
+  }, [loadActivity, match.params.id]);
 
   if (loadingInitial) return <Loading content="Loading activity..." />;
 
@@ -68,5 +58,4 @@ const mapStateToProps = ({
 
 export default connect(mapStateToProps, {
   loadActivity,
-  clearActivity,
 })(ActivityDetails);

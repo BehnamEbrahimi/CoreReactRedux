@@ -12,7 +12,7 @@ export const groupActivitiesByDate = (
 
   return Object.entries(
     sortedActivities.reduce((accumulator, activity) => {
-      const date = activity.date.split("T")[0];
+      const date = activity.date.toISOString().split("T")[0];
 
       accumulator[date] = accumulator[date]
         ? [...accumulator[date], activity]

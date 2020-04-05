@@ -1,8 +1,9 @@
 import { Dispatch } from "redux";
+import { toast } from "react-toastify";
 
 import agent from "../apis/agent";
+import { history } from "./../index";
 import { ActionTypes } from "./types";
-import { History } from "history";
 import { IActivity } from "../models/activity";
 import { IStore } from "./../reducers/index";
 
@@ -30,7 +31,7 @@ export const loadActivities = () => async (dispatch: Dispatch) => {
     const activities = await agent.Activities.list();
 
     activities.forEach((activity) => {
-      activity.date = activity.date.split(".")[0];
+      activity.date = new Date(activity.date);
     });
 
     dispatch<ILoadActivitiesAction>({
@@ -41,6 +42,7 @@ export const loadActivities = () => async (dispatch: Dispatch) => {
   } catch (ex) {
     ex.response && console.log(ex.response.data);
     dispatch(setLoadingInitial(false));
+    toast.error("Error!");
   }
 };
 
@@ -67,7 +69,7 @@ export const loadActivity = (id: string) => async (
     try {
       const activity = await agent.Activities.details(id);
 
-      activity.date = activity.date.split(".")[0];
+      activity.date = new Date(activity.date);
 
       dispatch<ILoadActivityAction>({
         type: ActionTypes.loadActivity,
@@ -77,6 +79,7 @@ export const loadActivity = (id: string) => async (
     } catch (ex) {
       ex.response && console.log(ex.response.data);
       dispatch(setLoadingInitial(false));
+      toast.error("Error!");
     }
   }
 };
@@ -91,18 +94,14 @@ export const clearActivity = (): IClearActivityAction => ({
 });
 
 // Create Activity
-export type ICreateActivity = (
-  newActivity: IActivity,
-  history: History
-) => void;
+export type ICreateActivity = (newActivity: IActivity) => void;
 export interface ICreateActivityAction {
   type: ActionTypes.createActivity;
   payload: IActivity;
 }
-export const createActivity = (
-  newActivity: IActivity,
-  history: History
-) => async (dispatch: Dispatch) => {
+export const createActivity = (newActivity: IActivity) => async (
+  dispatch: Dispatch
+) => {
   dispatch(setSubmitting(true));
   dispatch(setTarget("submit"));
 
@@ -121,24 +120,19 @@ export const createActivity = (
     ex.response && console.log(ex.response.data);
     dispatch(setSubmitting(false));
     dispatch(setTarget(""));
+    toast.error("Error!");
   }
 };
 
 // Edit Activity
-export type IEditActivity = (
-  id: string,
-  updatedActivity: IActivity,
-  history: any
-) => void;
+export type IEditActivity = (id: string, updatedActivity: IActivity) => void;
 export interface IEditActivityAction {
   type: ActionTypes.editActivity;
   payload: { id: string; updatedActivity: IActivity };
 }
-export const editActivity = (
-  id: string,
-  updatedActivity: IActivity,
-  history: any
-) => async (dispatch: Dispatch) => {
+export const editActivity = (id: string, updatedActivity: IActivity) => async (
+  dispatch: Dispatch
+) => {
   dispatch(setSubmitting(true));
   dispatch(setTarget("submit"));
 
@@ -157,6 +151,7 @@ export const editActivity = (
     ex.response && console.log(ex.response.data);
     dispatch(setSubmitting(false));
     dispatch(setTarget(""));
+    toast.error("Error!");
   }
 };
 
@@ -183,6 +178,7 @@ export const deleteActivity = (id: string) => async (dispatch: Dispatch) => {
     ex.response && console.log(ex.response.data);
     dispatch(setSubmitting(false));
     dispatch(setTarget(""));
+    toast.error("Error!");
   }
 };
 
