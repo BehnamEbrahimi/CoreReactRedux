@@ -1,10 +1,10 @@
-import React, { useState, useEffect, FormEvent } from 'react';
-import { RouteComponentProps, Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { Segment, Form, Button, Grid } from 'semantic-ui-react';
-import { v4 as uuid } from 'uuid';
+import React, { useState, useEffect, FormEvent } from "react";
+import { RouteComponentProps, Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { Segment, Form, Button, Grid } from "semantic-ui-react";
+import { v4 as uuid } from "uuid";
 
-import { IActivity } from '../../../models/activity';
+import { IActivity } from "../../../models/activity";
 import {
   loadActivity,
   ILoadActivity,
@@ -13,9 +13,9 @@ import {
   editActivity,
   IEditActivity,
   clearActivity,
-  IClearActivity
-} from '../../../actions';
-import { IStore } from '../../../reducers';
+  IClearActivity,
+} from "../../../actions";
+import { IStore } from "../../../reducers";
 
 interface IProps {
   loadActivity: ILoadActivity;
@@ -40,16 +40,16 @@ const ActivityForm: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
   submitting,
   target,
   match,
-  history
+  history,
 }) => {
   const emptyForm = {
-    id: '',
-    title: '',
-    category: '',
-    description: '',
-    date: '',
-    city: '',
-    venue: ''
+    id: "",
+    title: "",
+    category: "",
+    description: "",
+    date: "",
+    city: "",
+    venue: "",
   };
   const [formData, setFormData] = useState<IActivity>(emptyForm);
 
@@ -85,7 +85,7 @@ const ActivityForm: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
     if (formData.id.length === 0) {
       let newActivity = {
         ...formData,
-        id: uuid()
+        id: uuid(),
       };
       createActivity(newActivity, history);
     } else {
@@ -140,11 +140,11 @@ const ActivityForm: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
               positive
               type="submit"
               content="Submit"
-              loading={submitting && target === 'submit'}
+              loading={submitting && target === "submit"}
             />
             <Button
               as={Link}
-              to={'/activities'}
+              to={"/activities"}
               floated="right"
               type="button"
               content="Cancel"
@@ -157,7 +157,7 @@ const ActivityForm: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
 };
 
 const mapStateToProps = ({
-  activity: { activity, submitting, target }
+  activity: { activity, submitting, target },
 }: IStore): {
   activity: IActivity | undefined;
   submitting: boolean;
@@ -170,5 +170,5 @@ export default connect(mapStateToProps, {
   loadActivity,
   createActivity,
   editActivity,
-  clearActivity
+  clearActivity,
 })(ActivityForm);

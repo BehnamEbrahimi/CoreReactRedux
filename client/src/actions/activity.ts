@@ -1,10 +1,10 @@
-import { Dispatch } from 'redux';
+import { Dispatch } from "redux";
 
-import agent from '../apis/agent';
-import { ActionTypes } from './types';
-import { History } from 'history';
-import { IActivity } from '../models/activity';
-import { IStore } from './../reducers/index';
+import agent from "../apis/agent";
+import { ActionTypes } from "./types";
+import { History } from "history";
+import { IActivity } from "../models/activity";
+import { IStore } from "./../reducers/index";
 
 export type IActivityAction =
   | ILoadActivitiesAction
@@ -29,17 +29,17 @@ export const loadActivities = () => async (dispatch: Dispatch) => {
   try {
     const activities = await agent.Activities.list();
 
-    activities.forEach(activity => {
-      activity.date = activity.date.split('.')[0];
+    activities.forEach((activity) => {
+      activity.date = activity.date.split(".")[0];
     });
 
     dispatch<ILoadActivitiesAction>({
       type: ActionTypes.loadActivities,
-      payload: activities
+      payload: activities,
     });
     dispatch(setLoadingInitial(false));
   } catch (ex) {
-    console.log(ex);
+    ex.response && console.log(ex.response.data);
     dispatch(setLoadingInitial(false));
   }
 };
@@ -55,27 +55,27 @@ export const loadActivity = (id: string) => async (
   getState: () => IStore
 ) => {
   const activity = getState().activity.activities.find(
-    activity => activity.id === id
+    (activity) => activity.id === id
   );
   if (activity) {
     dispatch<ILoadActivityAction>({
       type: ActionTypes.loadActivity,
-      payload: activity
+      payload: activity,
     });
   } else {
     dispatch(setLoadingInitial(true));
     try {
       const activity = await agent.Activities.details(id);
 
-      activity.date = activity.date.split('.')[0];
+      activity.date = activity.date.split(".")[0];
 
       dispatch<ILoadActivityAction>({
         type: ActionTypes.loadActivity,
-        payload: activity
+        payload: activity,
       });
       dispatch(setLoadingInitial(false));
     } catch (ex) {
-      console.log(ex);
+      ex.response && console.log(ex.response.data);
       dispatch(setLoadingInitial(false));
     }
   }
@@ -87,7 +87,7 @@ export interface IClearActivityAction {
   type: ActionTypes.clearActivity;
 }
 export const clearActivity = (): IClearActivityAction => ({
-  type: ActionTypes.clearActivity
+  type: ActionTypes.clearActivity,
 });
 
 // Create Activity
@@ -104,23 +104,23 @@ export const createActivity = (
   history: History
 ) => async (dispatch: Dispatch) => {
   dispatch(setSubmitting(true));
-  dispatch(setTarget('submit'));
+  dispatch(setTarget("submit"));
 
   try {
     await agent.Activities.create(newActivity);
 
     dispatch<ICreateActivityAction>({
       type: ActionTypes.createActivity,
-      payload: newActivity
+      payload: newActivity,
     });
     dispatch(setSubmitting(false));
-    dispatch(setTarget(''));
+    dispatch(setTarget(""));
 
     history.push(`/activities/${newActivity.id}`);
   } catch (ex) {
-    console.log(ex);
+    ex.response && console.log(ex.response.data);
     dispatch(setSubmitting(false));
-    dispatch(setTarget(''));
+    dispatch(setTarget(""));
   }
 };
 
@@ -140,23 +140,23 @@ export const editActivity = (
   history: any
 ) => async (dispatch: Dispatch) => {
   dispatch(setSubmitting(true));
-  dispatch(setTarget('submit'));
+  dispatch(setTarget("submit"));
 
   try {
     await agent.Activities.update(updatedActivity);
 
     dispatch<IEditActivityAction>({
       type: ActionTypes.editActivity,
-      payload: { id, updatedActivity }
+      payload: { id, updatedActivity },
     });
     dispatch(setSubmitting(false));
-    dispatch(setTarget(''));
+    dispatch(setTarget(""));
 
     history.push(`/activities/${updatedActivity.id}`);
   } catch (ex) {
-    console.log(ex);
+    ex.response && console.log(ex.response.data);
     dispatch(setSubmitting(false));
-    dispatch(setTarget(''));
+    dispatch(setTarget(""));
   }
 };
 
@@ -175,14 +175,14 @@ export const deleteActivity = (id: string) => async (dispatch: Dispatch) => {
 
     dispatch<IDeleteActivityAction>({
       type: ActionTypes.deleteActivity,
-      payload: id
+      payload: id,
     });
     dispatch(setSubmitting(false));
-    dispatch(setTarget(''));
+    dispatch(setTarget(""));
   } catch (ex) {
-    console.log(ex);
+    ex.response && console.log(ex.response.data);
     dispatch(setSubmitting(false));
-    dispatch(setTarget(''));
+    dispatch(setTarget(""));
   }
 };
 
@@ -196,7 +196,7 @@ export const setLoadingInitial = (
   loadingInitial: boolean
 ): ISetLoadingInitialAction => ({
   type: ActionTypes.setLoadingInitial,
-  payload: loadingInitial
+  payload: loadingInitial,
 });
 
 // Set Submitting
@@ -207,7 +207,7 @@ export interface ISetSubmittingAction {
 }
 export const setSubmitting = (submitting: boolean): ISetSubmittingAction => ({
   type: ActionTypes.setSubmitting,
-  payload: submitting
+  payload: submitting,
 });
 
 // Set Target
@@ -218,5 +218,5 @@ export interface ISetTargetAction {
 }
 export const setTarget = (target: string): ISetTargetAction => ({
   type: ActionTypes.setTarget,
-  payload: target
+  payload: target,
 });

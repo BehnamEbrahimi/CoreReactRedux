@@ -1,6 +1,6 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Menu, Container, Button } from 'semantic-ui-react';
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { Menu, Container, Button } from "semantic-ui-react";
 
 const Navbar: React.FC = () => {
   return (

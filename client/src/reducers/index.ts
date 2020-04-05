@@ -1,6 +1,6 @@
-import { combineReducers } from 'redux';
-import { IActivity } from '../models/activity';
-import activityReducer from './activityReducer';
+import { combineReducers } from "redux";
+import { IActivity } from "../models/activity";
+import activityReducer from "./activityReducer";
 
 export interface IStore {
   activity: {
@@ -12,5 +12,5 @@ export interface IStore {
   };
 }
 export default combineReducers<IStore>({
-  activity: activityReducer
+  activity: activityReducer,
 });

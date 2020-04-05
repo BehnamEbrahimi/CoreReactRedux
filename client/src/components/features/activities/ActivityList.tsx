@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
-import { connect } from 'react-redux';
-import { Item, Label } from 'semantic-ui-react';
+import React, { Fragment } from "react";
+import { connect } from "react-redux";
+import { Item, Label } from "semantic-ui-react";
 
-import ActivityListItem from './ActivityListItem';
-import { IActivity } from '../../../models/activity';
-import { IStore } from '../../../reducers';
-import { groupActivitiesByDate } from '../../../utils/groupActivitiesByDate';
+import ActivityListItem from "./ActivityListItem";
+import { IActivity } from "../../../models/activity";
+import { IStore } from "../../../reducers";
+import { groupActivitiesByDate } from "../../../utils/groupActivitiesByDate";
 
 interface IProps {
   activities: IActivity[];
@@ -20,7 +20,7 @@ const ActivityList: React.FC<IProps> = ({ activities }) => {
             {date}
           </Label>
           <Item.Group divided>
-            {activitiesInEachDate.map(activity => (
+            {activitiesInEachDate.map((activity) => (
               <ActivityListItem key={activity.id} activity={activity} />
             ))}
           </Item.Group>
@@ -31,7 +31,7 @@ const ActivityList: React.FC<IProps> = ({ activities }) => {
 };
 
 const mapStateToProps = ({
-  activity: { activities }
+  activity: { activities },
 }: IStore): {
   activities: IActivity[];
 } => {

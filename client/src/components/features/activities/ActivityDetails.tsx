@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { Grid } from 'semantic-ui-react';
+import React, { useEffect } from "react";
+import { RouteComponentProps } from "react-router-dom";
+import { connect } from "react-redux";
+import { Grid } from "semantic-ui-react";
 
-import Loading from '../../layout/Loading';
-import ActivityDetailedHeader from './ActivityDetailedHeader';
-import ActivityDetailedInfo from './ActivityDetailedInfo';
-import ActivityDetailedChat from './ActivityDetailedChat';
-import ActivityDetailedSidebar from './ActivityDetailedSidebar';
-import { IActivity } from '../../../models/activity';
+import Loading from "../../layout/Loading";
+import ActivityDetailedHeader from "./ActivityDetailedHeader";
+import ActivityDetailedInfo from "./ActivityDetailedInfo";
+import ActivityDetailedChat from "./ActivityDetailedChat";
+import ActivityDetailedSidebar from "./ActivityDetailedSidebar";
+import { IActivity } from "../../../models/activity";
 import {
   loadActivity,
   ILoadActivity,
   clearActivity,
-  IClearActivity
-} from '../../../actions';
-import { IStore } from '../../../reducers';
+  IClearActivity,
+} from "../../../actions";
+import { IStore } from "../../../reducers";
 
 interface IProps {
   loadActivity: ILoadActivity;
@@ -33,7 +33,7 @@ const ActivityDetails: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
   clearActivity,
   activity,
   loadingInitial,
-  match
+  match,
 }) => {
   useEffect(() => {
     loadActivity(match.params.id);
@@ -42,8 +42,9 @@ const ActivityDetails: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
     return () => clearActivity();
   }, [loadActivity, match.params.id, clearActivity]);
 
-  if (loadingInitial || !activity)
-    return <Loading content="Loading activity..." />;
+  if (loadingInitial) return <Loading content="Loading activity..." />;
+
+  if (!activity) return <h2>Activity not found</h2>;
 
   return (
     <Grid>
@@ -60,12 +61,12 @@ const ActivityDetails: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
 };
 
 const mapStateToProps = ({
-  activity: { activity, loadingInitial }
+  activity: { activity, loadingInitial },
 }: IStore): { activity: IActivity; loadingInitial: boolean } => {
   return { activity: activity!, loadingInitial };
 };
 
 export default connect(mapStateToProps, {
   loadActivity,
-  clearActivity
+  clearActivity,
 })(ActivityDetails);

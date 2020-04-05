@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { Grid } from 'semantic-ui-react';
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { Grid } from "semantic-ui-react";
 
-import ActivityList from './ActivityList';
-import Loading from '../../layout/Loading';
-import { loadActivities, ILoadActivities } from '../../../actions';
-import { IStore } from '../../../reducers';
+import ActivityList from "./ActivityList";
+import Loading from "../../layout/Loading";
+import { loadActivities, ILoadActivities } from "../../../actions";
+import { IStore } from "../../../reducers";
 
 interface IProps {
   loadActivities: ILoadActivities;
@@ -14,7 +14,7 @@ interface IProps {
 
 const ActivityDashboard: React.FC<IProps> = ({
   loadActivities,
-  loadingInitial
+  loadingInitial,
 }) => {
   useEffect(() => {
     loadActivities();
@@ -33,7 +33,7 @@ const ActivityDashboard: React.FC<IProps> = ({
 };
 
 const mapStateToProps = ({
-  activity: { loadingInitial }
+  activity: { loadingInitial },
 }: IStore): {
   loadingInitial: boolean;
 } => {

@@ -1,16 +1,16 @@
-import { IStore } from './index';
-import { IActivityAction, ActionTypes } from '../actions';
+import { IStore } from "./index";
+import { IActivityAction, ActionTypes } from "../actions";
 
-const initialState: IStore['activity'] = {
+const initialState: IStore["activity"] = {
   activities: [],
   activity: undefined,
   loadingInitial: false,
   submitting: false,
-  target: ''
+  target: "",
 };
 
-export default function(
-  state: IStore['activity'] = initialState,
+export default function (
+  state: IStore["activity"] = initialState,
   action: IActivityAction
 ) {
   switch (action.type) {
@@ -20,19 +20,19 @@ export default function(
     case ActionTypes.loadActivity:
       return {
         ...state,
-        activity: action.payload
+        activity: action.payload,
       };
 
     case ActionTypes.clearActivity:
       return {
         ...state,
-        activity: undefined
+        activity: undefined,
       };
 
     case ActionTypes.createActivity:
       return {
         ...state,
-        activities: [...state.activities, action.payload]
+        activities: [...state.activities, action.payload],
       };
 
     case ActionTypes.editActivity:
@@ -40,16 +40,16 @@ export default function(
         ...state,
         activities: [
           ...state.activities.filter(
-            activity => activity.id !== action.payload.id
+            (activity) => activity.id !== action.payload.id
           ),
-          action.payload.updatedActivity
+          action.payload.updatedActivity,
         ],
-        activity: action.payload.updatedActivity
+        activity: action.payload.updatedActivity,
       };
 
     case ActionTypes.deleteActivity:
       const filteredActivities = state.activities.filter(
-        activity => activity.id !== action.payload
+        (activity) => activity.id !== action.payload
       );
 
       return { ...state, activities: filteredActivities };
