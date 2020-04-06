@@ -20,7 +20,7 @@ services.AddDefaultIdentity<AppUser>().AddEntityFrameworkStores<DataContext>();
 
 ### Seed users
 
-- In the `Seed.cd`, pass `UserManager<AppUser> userManager` to the `SeedData` method.
+- In the `Seed.cs`, pass `UserManager<AppUser> userManager` to the `SeedData` method.
 - The `userManager` is like a context for the users.
 - Add logic to add some users.
 - Create and pass a `userManager` to the `SeedData` method in the `Main` method.
