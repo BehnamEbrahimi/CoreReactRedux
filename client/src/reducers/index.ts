@@ -21,6 +21,7 @@ export interface IStore {
     activities: IActivity[];
     activity: IActivity | undefined;
     loadingInitial: boolean;
+    loading: boolean;
     submitting: boolean;
     target: string;
   };

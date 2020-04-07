@@ -4,10 +4,10 @@ import { ActionTypes } from ".";
 export type IActivityActions =
   | ILoadActivitiesAction
   | ILoadActivityAction
-  | IClearActivityAction
   | ICreateActivityAction
   | IEditActivityAction
   | IDeleteActivityAction
+  | ISetLoadingAction
   | ISetLoadingInitialAction
   | ISetSubmittingAction
   | ISetTargetAction;
@@ -20,10 +20,6 @@ export interface ILoadActivitiesAction {
 export interface ILoadActivityAction {
   type: ActionTypes.ACTIVITY;
   payload: IActivity;
-}
-
-export interface IClearActivityAction {
-  type: ActionTypes.CLEAR_ACTIVITY;
 }
 
 export interface ICreateActivityAction {
@@ -39,6 +35,11 @@ export interface IEditActivityAction {
 export interface IDeleteActivityAction {
   type: ActionTypes.DELETE_ACTIVITY;
   payload: string;
+}
+
+export interface ISetLoadingAction {
+  type: ActionTypes.LOADING_STATUS;
+  payload: boolean;
 }
 
 export interface ISetLoadingInitialAction {

@@ -6,14 +6,15 @@ const initialState: IStore["activity"] = {
   activities: [],
   activity: undefined,
   loadingInitial: false,
+  loading: false,
   submitting: false,
   target: "",
 };
 
 export default function (
-  state: IStore["activity"] = initialState,
+  state = initialState,
   action: IActivityActions
-) {
+): IStore["activity"] {
   switch (action.type) {
     case ActionTypes.ACTIVITIES_LIST:
       return { ...state, activities: action.payload };
@@ -24,16 +25,11 @@ export default function (
         activity: action.payload,
       };
 
-    case ActionTypes.CLEAR_ACTIVITY:
-      return {
-        ...state,
-        activity: undefined,
-      };
-
     case ActionTypes.NEW_ACTIVITY:
       return {
         ...state,
         activities: [...state.activities, action.payload],
+        activity: action.payload,
       };
 
     case ActionTypes.EDIT_ACTIVITY:
@@ -49,11 +45,16 @@ export default function (
       };
 
     case ActionTypes.DELETE_ACTIVITY:
-      const filteredActivities = state.activities.filter(
-        (activity) => activity.id !== action.payload
-      );
+      return {
+        ...state,
+        activities: state.activities.filter(
+          (activity) => activity.id !== action.payload
+        ),
+        activity: undefined,
+      };
 
-      return { ...state, activities: filteredActivities };
+    case ActionTypes.LOADING_STATUS:
+      return { ...state, loading: action.payload };
 
     case ActionTypes.INITIAL_LOADING_STATUS:
       return { ...state, loadingInitial: action.payload };

@@ -8,9 +8,9 @@ const initialState: IStore["modal"] = {
 };
 
 export default function (
-  state: IStore["modal"] = initialState,
+  state = initialState,
   action: IModalActions
-) {
+): IStore["modal"] {
   switch (action.type) {
     case ActionTypes.OPEN_MODAL:
       return { ...state, open: true, body: action.payload };

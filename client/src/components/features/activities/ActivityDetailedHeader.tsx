@@ -1,8 +1,16 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Segment, Item, Header, Button, Image } from "semantic-ui-react";
 import { format } from "date-fns";
 import { IActivity } from "../../../models/activity";
+import {
+  attendActivity,
+  IAttendActivity,
+  unattendActivity,
+  IUnattendActivity,
+} from "../../../actions";
+import { IStore } from "../../../reducers";
 
 const activityImageStyle = {
   filter: "brightness(30%)",
@@ -17,9 +25,12 @@ const activityImageTextStyle = {
   color: "white",
 };
 
-const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
-  activity,
-}) => {
+const ActivityDetailedHeader: React.FC<{
+  attendActivity: IAttendActivity;
+  unattendActivity: IUnattendActivity;
+  loading: boolean;
+  activity: IActivity;
+}> = ({ attendActivity, unattendActivity, loading, activity }) => {
   return (
     <Segment.Group>
       <Segment basic attached="top" style={{ padding: "0" }}>
@@ -47,19 +58,31 @@ const ActivityDetailedHeader: React.FC<{ activity: IActivity }> = ({
         </Segment>
       </Segment>
       <Segment clearing attached="bottom">
-        <Button color="teal">Join Activity</Button>
-        <Button>Cancel attendance</Button>
-        <Button
-          as={Link}
-          to={`/manage/${activity.id}`}
-          color="orange"
-          floated="right"
-        >
-          Manage Event
-        </Button>
+        {activity.isHost ? (
+          <Button
+            as={Link}
+            to={`/manage/${activity.id}`}
+            color="orange"
+            floated="right"
+          >
+            Manage Event
+          </Button>
+        ) : activity.isGoing ? (
+          <Button loading={loading} onClick={unattendActivity}>
+            Cancel attendance
+          </Button>
+        ) : (
+          <Button loading={loading} onClick={attendActivity} color="teal">
+            Join Activity
+          </Button>
+        )}
       </Segment>
     </Segment.Group>
   );
 };
 
-export default ActivityDetailedHeader;
+const mapStateToProps = ({ activity: { loading } }: IStore) => ({ loading });
+
+export default connect(mapStateToProps, { attendActivity, unattendActivity })(
+  ActivityDetailedHeader
+);

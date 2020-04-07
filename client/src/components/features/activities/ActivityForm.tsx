@@ -25,8 +25,6 @@ import {
   ICreateActivity,
   editActivity,
   IEditActivity,
-  clearActivity,
-  IClearActivity,
 } from "../../../actions";
 import { IStore } from "../../../reducers";
 
@@ -34,7 +32,6 @@ interface IProps {
   loadActivity: ILoadActivity;
   createActivity: ICreateActivity;
   editActivity: IEditActivity;
-  clearActivity: IClearActivity;
   activity: IActivity | undefined;
   submitting: boolean;
   target: string;
@@ -48,7 +45,6 @@ const ActivityForm: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
   loadActivity,
   createActivity,
   editActivity,
-  clearActivity,
   activity,
   submitting,
   target,
@@ -66,9 +62,6 @@ const ActivityForm: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
     if (!match.params.id) {
       setFormData(new ActivityFormValues());
     }
-
-    // when this component is unmounted, the activity will be cleared
-    return () => clearActivity();
 
     // eslint-disable-next-line
   }, []);
@@ -206,5 +199,4 @@ export default connect(mapStateToProps, {
   loadActivity,
   createActivity,
   editActivity,
-  clearActivity,
 })(ActivityForm);

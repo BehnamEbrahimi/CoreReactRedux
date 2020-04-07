@@ -9,9 +9,9 @@ const initialState: IStore["user"] = {
 };
 
 export default function (
-  state: IStore["user"] = initialState,
+  state = initialState,
   action: IUserActions
-) {
+): IStore["user"] {
   switch (action.type) {
     case ActionTypes.USER:
       return {

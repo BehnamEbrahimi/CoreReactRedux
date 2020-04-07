@@ -8,9 +8,9 @@ const initialState: IStore["app"] = {
 };
 
 export default function (
-  state: IStore["app"] = initialState,
+  state = initialState,
   action: IAppActions
-) {
+): IStore["app"] {
   switch (action.type) {
     case ActionTypes.APP_LOADED_STATUS:
       return { ...state, appLoaded: true };
