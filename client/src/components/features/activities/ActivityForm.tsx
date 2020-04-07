@@ -200,13 +200,7 @@ const ActivityForm: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
 
 const mapStateToProps = ({
   activity: { activity, submitting, target },
-}: IStore): {
-  activity: IActivity | undefined;
-  submitting: boolean;
-  target: string;
-} => {
-  return { activity, submitting, target };
-};
+}: IStore) => ({ activity, submitting, target });
 
 export default connect(mapStateToProps, {
   loadActivity,

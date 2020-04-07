@@ -1,5 +1,6 @@
 import { IStore } from "./index";
-import { IActivityAction, ActionTypes } from "../actions";
+import { ActionTypes } from "../actions/types";
+import { IActivityActions } from "../actions/types/activityActions";
 
 const initialState: IStore["activity"] = {
   activities: [],
@@ -11,31 +12,31 @@ const initialState: IStore["activity"] = {
 
 export default function (
   state: IStore["activity"] = initialState,
-  action: IActivityAction
+  action: IActivityActions
 ) {
   switch (action.type) {
-    case ActionTypes.loadActivities:
+    case ActionTypes.ACTIVITIES_LIST:
       return { ...state, activities: action.payload };
 
-    case ActionTypes.loadActivity:
+    case ActionTypes.ACTIVITY:
       return {
         ...state,
         activity: action.payload,
       };
 
-    case ActionTypes.clearActivity:
+    case ActionTypes.CLEAR_ACTIVITY:
       return {
         ...state,
         activity: undefined,
       };
 
-    case ActionTypes.createActivity:
+    case ActionTypes.NEW_ACTIVITY:
       return {
         ...state,
         activities: [...state.activities, action.payload],
       };
 
-    case ActionTypes.editActivity:
+    case ActionTypes.EDIT_ACTIVITY:
       return {
         ...state,
         activities: [
@@ -47,20 +48,20 @@ export default function (
         activity: action.payload.updatedActivity,
       };
 
-    case ActionTypes.deleteActivity:
+    case ActionTypes.DELETE_ACTIVITY:
       const filteredActivities = state.activities.filter(
         (activity) => activity.id !== action.payload
       );
 
       return { ...state, activities: filteredActivities };
 
-    case ActionTypes.setLoadingInitial:
+    case ActionTypes.INITIAL_LOADING_STATUS:
       return { ...state, loadingInitial: action.payload };
 
-    case ActionTypes.setSubmitting:
+    case ActionTypes.SUBMITTING_STATUS:
       return { ...state, submitting: action.payload };
 
-    case ActionTypes.setTarget:
+    case ActionTypes.TARGET:
       return { ...state, target: action.payload };
 
     default:

@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+import React, { useEffect, Fragment } from "react";
+import { connect } from "react-redux";
 import {
   Route,
   withRouter,
@@ -8,16 +9,41 @@ import {
 import { Container } from "semantic-ui-react";
 import { ToastContainer } from "react-toastify";
 
+import ModalContainer from "./common/ModalContainer";
+import NotFound from "./layout/NotFound";
+import Loading from "./layout/Loading";
 import HomePage from "./features/home/HomePage";
 import Navbar from "./features/nav/Navbar";
-import NotFound from "./layout/NotFound";
 import ActivityDashboard from "./features/activities/ActivityDashboard";
 import ActivityDetails from "./features/activities/ActivityDetails";
 import ActivityForm from "./features/activities/ActivityForm";
+import LoginForm from "./features/user/LoginForm";
+import { getUser, IGetUser, setAppLoaded, ISetAppLoaded } from "../actions";
+import { IStore } from "../reducers";
 
-const App: React.FC<RouteComponentProps> = ({ location }) => {
+interface IProps {
+  getUser: IGetUser;
+  setAppLoaded: ISetAppLoaded;
+  token: string | null;
+  appLoaded: boolean;
+}
+
+const App: React.FC<IProps & RouteComponentProps> = ({
+  getUser,
+  setAppLoaded,
+  token,
+  appLoaded,
+  location,
+}) => {
+  useEffect(() => {
+    token ? getUser() : setAppLoaded();
+  }, [getUser, setAppLoaded, token]);
+
+  if (!appLoaded) return <Loading content="Loading app..." />;
+
   return (
     <Fragment>
+      <ModalContainer />
       <ToastContainer position="bottom-right" />
       <Route exact path="/" component={HomePage} />
       <Route
@@ -39,6 +65,7 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
                   path={["/createActivity", "/manage/:id"]}
                   component={ActivityForm}
                 />
+                <Route path="/login" component={LoginForm} />
                 <Route
                   component={NotFound} // Obviously, there is path for this component! And because there is no path, we cannot use exact and we must use Switch.
                 />
@@ -51,5 +78,12 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
   );
 };
 
-export default withRouter(App); //withRouter is solely because we want to access location here.
+const mapStateToProps = ({ app: { token, appLoaded } }: IStore) => ({
+  token,
+  appLoaded,
+});
+
+export default connect(mapStateToProps, { getUser, setAppLoaded })(
+  withRouter(App)
+); //withRouter is solely because we want to access location here.
 // Normally, we have access to location, history and match objects inside components rendered by Route.

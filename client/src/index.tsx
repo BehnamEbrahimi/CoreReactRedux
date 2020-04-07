@@ -16,7 +16,7 @@ import reducers from "./reducers";
 
 const store = createStore(
   reducers,
-  {},
+  { app: { token: window.localStorage.getItem("jwt"), appLoaded: false } },
   composeWithDevTools(applyMiddleware(thunk))
 );
 

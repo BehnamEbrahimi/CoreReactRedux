@@ -3,27 +3,23 @@ import { toast } from "react-toastify";
 
 import agent from "../apis/agent";
 import { history } from "./../index";
-import { ActionTypes } from "./types";
 import { IActivity } from "../models/activity";
 import { IStore } from "./../reducers/index";
-
-export type IActivityAction =
-  | ILoadActivitiesAction
-  | ILoadActivityAction
-  | IClearActivityAction
-  | ICreateActivityAction
-  | IEditActivityAction
-  | IDeleteActivityAction
-  | ISetLoadingInitialAction
-  | ISetSubmittingAction
-  | ISetTargetAction;
+import { ActionTypes } from "./types";
+import {
+  ILoadActivitiesAction,
+  ILoadActivityAction,
+  IClearActivityAction,
+  ICreateActivityAction,
+  IEditActivityAction,
+  IDeleteActivityAction,
+  ISetLoadingInitialAction,
+  ISetSubmittingAction,
+  ISetTargetAction,
+} from "./types/activityActions";
 
 // Load Activities
 export type ILoadActivities = () => void;
-export interface ILoadActivitiesAction {
-  type: ActionTypes.loadActivities;
-  payload: IActivity[];
-}
 export const loadActivities = () => async (dispatch: Dispatch) => {
   dispatch(setLoadingInitial(true));
 
@@ -35,7 +31,7 @@ export const loadActivities = () => async (dispatch: Dispatch) => {
     });
 
     dispatch<ILoadActivitiesAction>({
-      type: ActionTypes.loadActivities,
+      type: ActionTypes.ACTIVITIES_LIST,
       payload: activities,
     });
     dispatch(setLoadingInitial(false));
@@ -48,10 +44,6 @@ export const loadActivities = () => async (dispatch: Dispatch) => {
 
 // Load Activity
 export type ILoadActivity = (id: string) => void;
-export interface ILoadActivityAction {
-  type: ActionTypes.loadActivity;
-  payload: IActivity;
-}
 export const loadActivity = (id: string) => async (
   dispatch: Dispatch,
   getState: () => IStore
@@ -61,7 +53,7 @@ export const loadActivity = (id: string) => async (
   );
   if (activity) {
     dispatch<ILoadActivityAction>({
-      type: ActionTypes.loadActivity,
+      type: ActionTypes.ACTIVITY,
       payload: activity,
     });
   } else {
@@ -72,7 +64,7 @@ export const loadActivity = (id: string) => async (
       activity.date = new Date(activity.date);
 
       dispatch<ILoadActivityAction>({
-        type: ActionTypes.loadActivity,
+        type: ActionTypes.ACTIVITY,
         payload: activity,
       });
       dispatch(setLoadingInitial(false));
@@ -86,19 +78,12 @@ export const loadActivity = (id: string) => async (
 
 // Clear Activity
 export type IClearActivity = () => void;
-export interface IClearActivityAction {
-  type: ActionTypes.clearActivity;
-}
 export const clearActivity = (): IClearActivityAction => ({
-  type: ActionTypes.clearActivity,
+  type: ActionTypes.CLEAR_ACTIVITY,
 });
 
 // Create Activity
 export type ICreateActivity = (newActivity: IActivity) => void;
-export interface ICreateActivityAction {
-  type: ActionTypes.createActivity;
-  payload: IActivity;
-}
 export const createActivity = (newActivity: IActivity) => async (
   dispatch: Dispatch
 ) => {
@@ -109,7 +94,7 @@ export const createActivity = (newActivity: IActivity) => async (
     await agent.Activities.create(newActivity);
 
     dispatch<ICreateActivityAction>({
-      type: ActionTypes.createActivity,
+      type: ActionTypes.NEW_ACTIVITY,
       payload: newActivity,
     });
     dispatch(setSubmitting(false));
@@ -126,10 +111,6 @@ export const createActivity = (newActivity: IActivity) => async (
 
 // Edit Activity
 export type IEditActivity = (id: string, updatedActivity: IActivity) => void;
-export interface IEditActivityAction {
-  type: ActionTypes.editActivity;
-  payload: { id: string; updatedActivity: IActivity };
-}
 export const editActivity = (id: string, updatedActivity: IActivity) => async (
   dispatch: Dispatch
 ) => {
@@ -140,7 +121,7 @@ export const editActivity = (id: string, updatedActivity: IActivity) => async (
     await agent.Activities.update(updatedActivity);
 
     dispatch<IEditActivityAction>({
-      type: ActionTypes.editActivity,
+      type: ActionTypes.EDIT_ACTIVITY,
       payload: { id, updatedActivity },
     });
     dispatch(setSubmitting(false));
@@ -157,10 +138,6 @@ export const editActivity = (id: string, updatedActivity: IActivity) => async (
 
 // Delete Activity
 export type IDeleteActivity = (id: string) => void;
-export interface IDeleteActivityAction {
-  type: ActionTypes.deleteActivity;
-  payload: string;
-}
 export const deleteActivity = (id: string) => async (dispatch: Dispatch) => {
   dispatch(setSubmitting(true));
   dispatch(setTarget(id));
@@ -169,7 +146,7 @@ export const deleteActivity = (id: string) => async (dispatch: Dispatch) => {
     await agent.Activities.delete(id);
 
     dispatch<IDeleteActivityAction>({
-      type: ActionTypes.deleteActivity,
+      type: ActionTypes.DELETE_ACTIVITY,
       payload: id,
     });
     dispatch(setSubmitting(false));
@@ -184,35 +161,23 @@ export const deleteActivity = (id: string) => async (dispatch: Dispatch) => {
 
 // Set Loading
 export type ISetLoadingInitial = (loadingInitial: boolean) => void;
-export interface ISetLoadingInitialAction {
-  type: ActionTypes.setLoadingInitial;
-  payload: boolean;
-}
 export const setLoadingInitial = (
   loadingInitial: boolean
 ): ISetLoadingInitialAction => ({
-  type: ActionTypes.setLoadingInitial,
+  type: ActionTypes.INITIAL_LOADING_STATUS,
   payload: loadingInitial,
 });
 
 // Set Submitting
 export type ISetSubmitting = (submitting: boolean) => void;
-export interface ISetSubmittingAction {
-  type: ActionTypes.setSubmitting;
-  payload: boolean;
-}
 export const setSubmitting = (submitting: boolean): ISetSubmittingAction => ({
-  type: ActionTypes.setSubmitting,
+  type: ActionTypes.SUBMITTING_STATUS,
   payload: submitting,
 });
 
 // Set Target
 export type ISetTarget = (target: string) => void;
-export interface ISetTargetAction {
-  type: ActionTypes.setTarget;
-  payload: string;
-}
 export const setTarget = (target: string): ISetTargetAction => ({
-  type: ActionTypes.setTarget,
+  type: ActionTypes.TARGET,
   payload: target,
 });

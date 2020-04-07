@@ -20,10 +20,12 @@ const ActivityDashboard: React.FC<IProps> = ({
     loadActivities();
   }, [loadActivities]);
 
+  if (loadingInitial) return <Loading content="Loading activities" />;
+
   return (
     <Grid>
       <Grid.Column width={10}>
-        {loadingInitial ? <Loading /> : <ActivityList />}
+        <ActivityList />
       </Grid.Column>
       <Grid.Column width={6}>
         <h2>Activity filters</h2>
@@ -32,12 +34,8 @@ const ActivityDashboard: React.FC<IProps> = ({
   );
 };
 
-const mapStateToProps = ({
-  activity: { loadingInitial },
-}: IStore): {
-  loadingInitial: boolean;
-} => {
-  return { loadingInitial };
-};
+const mapStateToProps = ({ activity: { loadingInitial } }: IStore) => ({
+  loadingInitial,
+});
 
 export default connect(mapStateToProps, { loadActivities })(ActivityDashboard);

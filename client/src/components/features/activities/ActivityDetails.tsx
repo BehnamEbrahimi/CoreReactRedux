@@ -52,9 +52,7 @@ const ActivityDetails: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
 
 const mapStateToProps = ({
   activity: { activity, loadingInitial },
-}: IStore): { activity: IActivity; loadingInitial: boolean } => {
-  return { activity: activity!, loadingInitial };
-};
+}: IStore) => ({ activity: activity!, loadingInitial });
 
 export default connect(mapStateToProps, {
   loadActivity,

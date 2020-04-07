@@ -6,6 +6,7 @@ import ActivityListItem from "./ActivityListItem";
 import { IActivity } from "../../../models/activity";
 import { IStore } from "../../../reducers";
 import { groupActivitiesByDate } from "../../../utils/groupActivitiesByDate";
+import { format } from "date-fns";
 
 interface IProps {
   activities: IActivity[];
@@ -17,7 +18,7 @@ const ActivityList: React.FC<IProps> = ({ activities }) => {
       {groupActivitiesByDate(activities).map(([date, activitiesInEachDate]) => (
         <Fragment key={date}>
           <Label size="large" color="blue">
-            {date}
+            {format(Date.parse(date), "eeee do MMMM")}
           </Label>
           <Item.Group divided>
             {activitiesInEachDate.map((activity) => (
@@ -30,12 +31,8 @@ const ActivityList: React.FC<IProps> = ({ activities }) => {
   );
 };
 
-const mapStateToProps = ({
-  activity: { activities },
-}: IStore): {
-  activities: IActivity[];
-} => {
-  return { activities };
-};
+const mapStateToProps = ({ activity: { activities } }: IStore) => ({
+  activities,
+});
 
 export default connect(mapStateToProps, {})(ActivityList);

@@ -1,8 +1,21 @@
-import React from "react";
+import React, { Fragment } from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Container, Segment, Header, Button, Image } from "semantic-ui-react";
 
-const HomePage = () => {
+import LoginForm from "../user/LoginForm";
+import RegisterForm from "../user/RegisterForm";
+import { IUser } from "../../../models/user";
+import { openModal, IOpenModal } from "../../../actions";
+import { IStore } from "../../../reducers";
+
+interface IProps {
+  openModal: IOpenModal;
+  isLoggedIn: boolean;
+  user: IUser | null;
+}
+
+const HomePage: React.FC<IProps> = ({ openModal, isLoggedIn, user }) => {
   return (
     <Segment inverted textAlign="center" vertical className="masthead">
       <Container text>
@@ -15,13 +28,44 @@ const HomePage = () => {
           />
           CRR
         </Header>
-        <Header as="h2" inverted content="Welcome to CRR" />
-        <Button as={Link} to="/activities" size="huge" inverted>
-          Take me to the CRR!
-        </Button>
+        {isLoggedIn && user ? (
+          <Fragment>
+            <Header
+              as="h2"
+              inverted
+              content={`Welcome back ${user.displayName}`}
+            />
+            <Button as={Link} to="/activities" size="huge" inverted>
+              Go to activities!
+            </Button>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <Header as="h2" inverted content={`Welcome to Reactivitities`} />
+            <Button
+              onClick={() => openModal(<LoginForm />)}
+              size="huge"
+              inverted
+            >
+              Login
+            </Button>
+            <Button
+              onClick={() => openModal(<RegisterForm />)}
+              size="huge"
+              inverted
+            >
+              Register
+            </Button>
+          </Fragment>
+        )}
       </Container>
     </Segment>
   );
 };
 
-export default HomePage;
+const mapStateToProps = ({ user: { isLoggedIn, user } }: IStore) => ({
+  isLoggedIn,
+  user,
+});
+
+export default connect(mapStateToProps, { openModal })(HomePage);
