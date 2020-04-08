@@ -17,7 +17,7 @@ import Navbar from "./features/nav/Navbar";
 import ActivityDashboard from "./features/activities/ActivityDashboard";
 import ActivityDetails from "./features/activities/ActivityDetails";
 import ActivityForm from "./features/activities/ActivityForm";
-import LoginForm from "./features/user/LoginForm";
+import ProfilePage from "./features/profiles/ProfilePage";
 import { getUser, IGetUser, setAppLoaded, ISetAppLoaded } from "../actions";
 import { IStore } from "../reducers";
 
@@ -65,7 +65,7 @@ const App: React.FC<IProps & RouteComponentProps> = ({
                   path={["/createActivity", "/manage/:id"]}
                   component={ActivityForm}
                 />
-                <Route path="/login" component={LoginForm} />
+                <Route path="/profile/:username" component={ProfilePage} />
                 <Route
                   component={NotFound} // Obviously, there is path for this component! And because there is no path, we cannot use exact and we must use Switch.
                 />

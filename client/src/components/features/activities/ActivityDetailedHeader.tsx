@@ -31,6 +31,8 @@ const ActivityDetailedHeader: React.FC<{
   loading: boolean;
   activity: IActivity;
 }> = ({ attendActivity, unattendActivity, loading, activity }) => {
+  const host = activity.attendees.filter((at) => at.isHost)[0];
+
   return (
     <Segment.Group>
       <Segment basic attached="top" style={{ padding: "0" }}>
@@ -50,7 +52,10 @@ const ActivityDetailedHeader: React.FC<{
                 />
                 <p>{format(activity.date, "eeee do MMM")}</p>
                 <p>
-                  Hosted by <strong>Bob</strong>
+                  Hosted by{" "}
+                  <Link to={`/profile/${host.username}`}>
+                    <strong>{host.displayName}</strong>
+                  </Link>
                 </p>
               </Item.Content>
             </Item>

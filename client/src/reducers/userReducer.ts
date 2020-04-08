@@ -27,6 +27,17 @@ export default function (
         error: action.payload,
       };
 
+    case ActionTypes.MAIN_PHOTO:
+      return {
+        ...state,
+        user: {
+          username: state.user!.username,
+          displayName: state.user!.displayName,
+          token: state.user!.token,
+          image: action.payload.url,
+        },
+      };
+
     default:
       return state;
   }

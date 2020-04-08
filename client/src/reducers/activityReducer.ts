@@ -4,7 +4,7 @@ import { IActivityActions } from "../actions/types/activityActions";
 
 const initialState: IStore["activity"] = {
   activities: [],
-  activity: undefined,
+  activity: null,
   loadingInitial: false,
   loading: false,
   submitting: false,
@@ -19,7 +19,7 @@ export default function (
     case ActionTypes.ACTIVITIES_LIST:
       return { ...state, activities: action.payload };
 
-    case ActionTypes.ACTIVITY:
+    case ActionTypes.CURRENT_ACTIVITY:
       return {
         ...state,
         activity: action.payload,
@@ -50,19 +50,19 @@ export default function (
         activities: state.activities.filter(
           (activity) => activity.id !== action.payload
         ),
-        activity: undefined,
+        activity: null,
       };
 
-    case ActionTypes.LOADING_STATUS:
+    case ActionTypes.ACTIVITY_LOADING_STATUS:
       return { ...state, loading: action.payload };
 
-    case ActionTypes.INITIAL_LOADING_STATUS:
+    case ActionTypes.ACTIVITIES_LOADING_STATUS:
       return { ...state, loadingInitial: action.payload };
 
-    case ActionTypes.SUBMITTING_STATUS:
+    case ActionTypes.ACTIVITY_SUBMITTING_STATUS:
       return { ...state, submitting: action.payload };
 
-    case ActionTypes.TARGET:
+    case ActionTypes.TARGET_ACTIVITY:
       return { ...state, target: action.payload };
 
     default:

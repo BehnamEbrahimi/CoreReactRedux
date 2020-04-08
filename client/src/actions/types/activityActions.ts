@@ -7,10 +7,10 @@ export type IActivityActions =
   | ICreateActivityAction
   | IEditActivityAction
   | IDeleteActivityAction
-  | ISetLoadingAction
-  | ISetLoadingInitialAction
-  | ISetSubmittingAction
-  | ISetTargetAction;
+  | ISetActivityLoadingStatusAction
+  | ISetActivitiesLoadingStatusAction
+  | ISetActivitySubmittingStatusAction
+  | ISetTargetActvityAction;
 
 export interface ILoadActivitiesAction {
   type: ActionTypes.ACTIVITIES_LIST;
@@ -18,7 +18,7 @@ export interface ILoadActivitiesAction {
 }
 
 export interface ILoadActivityAction {
-  type: ActionTypes.ACTIVITY;
+  type: ActionTypes.CURRENT_ACTIVITY;
   payload: IActivity;
 }
 
@@ -37,22 +37,22 @@ export interface IDeleteActivityAction {
   payload: string;
 }
 
-export interface ISetLoadingAction {
-  type: ActionTypes.LOADING_STATUS;
+export interface ISetActivityLoadingStatusAction {
+  type: ActionTypes.ACTIVITY_LOADING_STATUS;
   payload: boolean;
 }
 
-export interface ISetLoadingInitialAction {
-  type: ActionTypes.INITIAL_LOADING_STATUS;
+export interface ISetActivitiesLoadingStatusAction {
+  type: ActionTypes.ACTIVITIES_LOADING_STATUS;
   payload: boolean;
 }
 
-export interface ISetSubmittingAction {
-  type: ActionTypes.SUBMITTING_STATUS;
+export interface ISetActivitySubmittingStatusAction {
+  type: ActionTypes.ACTIVITY_SUBMITTING_STATUS;
   payload: boolean;
 }
 
-export interface ISetTargetAction {
-  type: ActionTypes.TARGET;
+export interface ISetTargetActvityAction {
+  type: ActionTypes.TARGET_ACTIVITY;
   payload: string;
 }

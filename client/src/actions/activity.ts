@@ -12,10 +12,10 @@ import {
   ICreateActivityAction,
   IEditActivityAction,
   IDeleteActivityAction,
-  ISetLoadingAction,
-  ISetLoadingInitialAction,
-  ISetSubmittingAction,
-  ISetTargetAction,
+  ISetActivityLoadingStatusAction,
+  ISetActivitiesLoadingStatusAction,
+  ISetActivitySubmittingStatusAction,
+  ISetTargetActvityAction,
 } from "./types/activityActions";
 import { setActivityProps } from "../utils/setActivityProps";
 import { createAttendee } from "../utils/createAttendee";
@@ -58,7 +58,7 @@ export const loadActivity = (id: string) => async (
   );
   if (activity) {
     dispatch<ILoadActivityAction>({
-      type: ActionTypes.ACTIVITY,
+      type: ActionTypes.CURRENT_ACTIVITY,
       payload: activity,
     });
   } else {
@@ -69,7 +69,7 @@ export const loadActivity = (id: string) => async (
       setActivityProps(activity, getState().user.user!);
 
       dispatch<ILoadActivityAction>({
-        type: ActionTypes.ACTIVITY,
+        type: ActionTypes.CURRENT_ACTIVITY,
         payload: activity,
       });
       dispatch(setLoadingInitial(false));
@@ -232,8 +232,10 @@ export const unattendActivity = () => async (
 
 // Set Loading
 export type ISetLoading = (loading: boolean) => void;
-export const setLoading = (loading: boolean): ISetLoadingAction => ({
-  type: ActionTypes.LOADING_STATUS,
+export const setLoading = (
+  loading: boolean
+): ISetActivityLoadingStatusAction => ({
+  type: ActionTypes.ACTIVITY_LOADING_STATUS,
   payload: loading,
 });
 
@@ -241,21 +243,23 @@ export const setLoading = (loading: boolean): ISetLoadingAction => ({
 export type ISetLoadingInitial = (loadingInitial: boolean) => void;
 export const setLoadingInitial = (
   loadingInitial: boolean
-): ISetLoadingInitialAction => ({
-  type: ActionTypes.INITIAL_LOADING_STATUS,
+): ISetActivitiesLoadingStatusAction => ({
+  type: ActionTypes.ACTIVITIES_LOADING_STATUS,
   payload: loadingInitial,
 });
 
 // Set Submitting
 export type ISetSubmitting = (submitting: boolean) => void;
-export const setSubmitting = (submitting: boolean): ISetSubmittingAction => ({
-  type: ActionTypes.SUBMITTING_STATUS,
+export const setSubmitting = (
+  submitting: boolean
+): ISetActivitySubmittingStatusAction => ({
+  type: ActionTypes.ACTIVITY_SUBMITTING_STATUS,
   payload: submitting,
 });
 
 // Set Target
 export type ISetTarget = (target: string) => void;
-export const setTarget = (target: string): ISetTargetAction => ({
-  type: ActionTypes.TARGET,
+export const setTarget = (target: string): ISetTargetActvityAction => ({
+  type: ActionTypes.TARGET_ACTIVITY,
   payload: target,
 });

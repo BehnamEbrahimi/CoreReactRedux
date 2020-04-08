@@ -32,7 +32,7 @@ interface IProps {
   loadActivity: ILoadActivity;
   createActivity: ICreateActivity;
   editActivity: IEditActivity;
-  activity: IActivity | undefined;
+  activity: IActivity | null;
   submitting: boolean;
   target: string;
 }
