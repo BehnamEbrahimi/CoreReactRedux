@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Resources;
 using AutoMapper;
 using Domain;
 using MediatR;
@@ -28,7 +29,8 @@ namespace Application.Activities
             {
                 var activities = await _context.Activities
                     .Include(a => a.Attendees)
-                    .ThenInclude(at => at.AppUser)
+                        .ThenInclude(at => at.AppUser)
+                            .ThenInclude(u => u.Photos)
                     .ToListAsync();
 
                 return _mapper.Map<List<Activity>, List<ActivityDto>>(activities);

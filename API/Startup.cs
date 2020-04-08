@@ -5,7 +5,8 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using FluentValidation.AspNetCore;
-using Infrastructure;
+using Infrastructure.Photos;
+using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -60,17 +61,6 @@ namespace API
             });
 
             services.AddDefaultIdentity<AppUser>().AddEntityFrameworkStores<DataContext>();
-
-            services.AddAuthorization(opt =>
-            {
-                opt.AddPolicy("IsActivityHost", policy =>
-                {
-                    policy.Requirements.Add(new IsHostRequirement());
-                });
-            });
-
-            services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {
@@ -82,10 +72,20 @@ namespace API
                         ValidateIssuer = false
                     };
                 });
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("IsActivityHost", policy =>
+                {
+                    policy.Requirements.Add(new IsHostRequirement());
+                });
+            });
+            services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
+
 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
-
             services.AddScoped<IUserAccessor, UserAccessor>();
+            services.AddScoped<IPhotoStorage, PhotoStorage>();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

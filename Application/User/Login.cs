@@ -1,19 +1,21 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Errors;
+using Application.Types;
 using Application.Interfaces;
+using Application.Resources;
 using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.EntityFrameworkCore;
+using Persistence;
 
 namespace Application.User
 {
     public class Login
     {
-        public class Query : IRequest<User>
+        public class Query : IRequest<UserDto>
         {
             public string Email { get; set; }
             public string Password { get; set; }
@@ -28,20 +30,22 @@ namespace Application.User
             }
         }
 
-        public class Handler : IRequestHandler<Query, User>
+        public class Handler : IRequestHandler<Query, UserDto>
         {
+            private readonly DataContext _context;
             private readonly UserManager<AppUser> _userManager;
             private readonly SignInManager<AppUser> _signInManager;
             private readonly IJwtGenerator _jwtGenerator;
 
-            public Handler(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IJwtGenerator jwtGenerator)
+            public Handler(DataContext context, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IJwtGenerator jwtGenerator)
             {
+                _context = context;
                 _userManager = userManager;
                 _signInManager = signInManager;
                 _jwtGenerator = jwtGenerator;
             }
 
-            public async Task<User> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<UserDto> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.FindByEmailAsync(request.Email);
 
@@ -53,13 +57,14 @@ namespace Application.User
 
                 if (result.Succeeded)
                 {
-                    // TODO: generate token
-                    return new User
+                    var image = await _context.Photos.FirstOrDefaultAsync(p => p.AppUserId == user.Id && p.IsMain);
+
+                    return new UserDto
                     {
                         DisplayName = user.DisplayName,
                         Token = _jwtGenerator.CreateToken(user),
                         Username = user.UserName,
-                        Image = null
+                        Image = image?.Url
                     };
                 }
 

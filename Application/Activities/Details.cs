@@ -2,7 +2,8 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Errors;
+using Application.Types;
+using Application.Resources;
 using AutoMapper;
 using Domain;
 using MediatR;
@@ -33,7 +34,8 @@ namespace Application.Activities
             {
                 var activity = await _context.Activities
                     .Include(a => a.Attendees)
-                    .ThenInclude(at => at.AppUser)
+                        .ThenInclude(at => at.AppUser)
+                            .ThenInclude(u => u.Photos)
                     .SingleOrDefaultAsync(a => a.Id == request.Id);
 
                 if (activity == null)

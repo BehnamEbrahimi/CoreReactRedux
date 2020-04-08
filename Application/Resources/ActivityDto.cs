@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
-namespace Application.Activities
+namespace Application.Resources
 {
     public class ActivityDto
     {
@@ -13,5 +14,10 @@ namespace Application.Activities
         public string City { get; set; }
         public string Venue { get; set; }
         public ICollection<AttendeeDto> Attendees { get; set; }
+
+        public ActivityDto()
+        {
+            Attendees = new Collection<AttendeeDto>();
+        }
     }
 }

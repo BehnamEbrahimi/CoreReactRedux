@@ -3,9 +3,10 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Errors;
+using Application.Types;
 using Application.Interfaces;
-using Application.Validators;
+using Application.Extensions;
+using Application.Resources;
 using Domain;
 using FluentValidation;
 using MediatR;
@@ -17,7 +18,7 @@ namespace Application.User
 {
     public class Register
     {
-        public class Command : IRequest<User>
+        public class Command : IRequest<UserDto>
         {
             public string DisplayName { get; set; }
             public string Username { get; set; }
@@ -36,17 +37,17 @@ namespace Application.User
             }
         }
 
-        public class Handler : IRequestHandler<Command, User>
+        public class Handler : IRequestHandler<Command, UserDto>
         {
             private readonly UserManager<AppUser> _userManager;
             private readonly IJwtGenerator _jwtGenerator;
-            public Handler(DataContext context, UserManager<AppUser> userManager, IJwtGenerator jwtGenerator)
+            public Handler(UserManager<AppUser> userManager, IJwtGenerator jwtGenerator)
             {
                 _userManager = userManager;
                 _jwtGenerator = jwtGenerator;
             }
 
-            public async Task<User> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<UserDto> Handle(Command request, CancellationToken cancellationToken)
             {
                 if (await _userManager.Users.Where(u => u.Email == request.Email).AnyAsync())
                     throw new RestException(HttpStatusCode.BadRequest, new { Email = "Email already exists" });
@@ -65,7 +66,7 @@ namespace Application.User
 
                 if (result.Succeeded)
                 {
-                    return new User
+                    return new UserDto
                     {
                         DisplayName = user.DisplayName,
                         Token = _jwtGenerator.CreateToken(user),

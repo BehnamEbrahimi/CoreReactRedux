@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,13 +9,13 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Application.Activities
+namespace Application.Photos
 {
-    public class Unattend
+    public class SetMain
     {
         public class Command : IRequest
         {
-            public Guid Id { get; set; }
+            public string Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Command>
@@ -30,25 +31,19 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.FindAsync(request.Id);
+                var user = await _context.Users
+                                    .Include(u => u.Photos)
+                                    .SingleOrDefaultAsync(u => u.UserName == _userAccessor.GetCurrentUsername());
 
-                if (activity == null)
-                    throw new RestException(HttpStatusCode.NotFound, new { Activity = "Cound not find activity" });
+                var photo = user.Photos.FirstOrDefault(p => p.Id == request.Id);
 
-                var user = await _context.Users.SingleOrDefaultAsync(u =>
-                    u.UserName == _userAccessor.GetCurrentUsername());
+                if (photo == null)
+                    throw new RestException(HttpStatusCode.NotFound, new { Photo = "Not found" });
 
-                var attendee = await _context.Attendees
-                    .SingleOrDefaultAsync(at => at.ActivityId == activity.Id &&
-                        at.AppUserId == user.Id);
+                var currentMain = user.Photos.FirstOrDefault(p => p.IsMain);
 
-                if (attendee == null)
-                    return Unit.Value;
-
-                if (attendee.IsHost)
-                    throw new RestException(HttpStatusCode.BadRequest, new { attendee = "You cannot remove yourself as host" });
-
-                _context.Attendees.Remove(attendee);
+                currentMain.IsMain = false;
+                photo.IsMain = true;
 
                 var success = await _context.SaveChangesAsync() > 0;
 
