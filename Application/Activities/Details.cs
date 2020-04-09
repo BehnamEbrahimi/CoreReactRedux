@@ -36,6 +36,7 @@ namespace Application.Activities
                     .Include(a => a.Attendees)
                         .ThenInclude(at => at.AppUser)
                             .ThenInclude(u => u.Photos)
+                    .Include(a => a.Comments)
                     .SingleOrDefaultAsync(a => a.Id == request.Id);
 
                 if (activity == null)

@@ -125,7 +125,7 @@ dotnet add reference ../Infrastructure
 ### Securing API
 
 - Add `Microsoft.AspNetCore.Authentication.JwtBearer` package to the `API` project.
-- Add the followin in the `Startup.cs`:
+- Add the following in the `Startup.cs`:
 
 ```c#
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>

@@ -5,6 +5,7 @@ import { IActivityActions } from "../actions/types/activityActions";
 const initialState: IStore["activity"] = {
   activities: [],
   activity: null,
+  chatHubConnection: null,
   loadingInitial: false,
   loading: false,
   submitting: false,
@@ -51,6 +52,31 @@ export default function (
           (activity) => activity.id !== action.payload
         ),
         activity: null,
+      };
+
+    case ActionTypes.CHAT_HUB_CONNECTION:
+      return {
+        ...state,
+        chatHubConnection: action.payload,
+      };
+
+    case ActionTypes.NEW_COMMENT:
+      return {
+        ...state,
+        activity: {
+          // for some reason, TS complains about spreading object
+          id: state.activity!.id,
+          title: state.activity!.title,
+          description: state.activity!.description,
+          category: state.activity!.category,
+          date: state.activity!.date,
+          city: state.activity!.city,
+          venue: state.activity!.venue,
+          isGoing: state.activity!.isGoing,
+          isHost: state.activity!.isHost,
+          attendees: state.activity!.attendees,
+          comments: [...state.activity!.comments, action.payload],
+        },
       };
 
     case ActionTypes.ACTIVITY_LOADING_STATUS:

@@ -14,10 +14,12 @@ namespace Application.Resources
         public string City { get; set; }
         public string Venue { get; set; }
         public ICollection<AttendeeDto> Attendees { get; set; }
+        public ICollection<CommentDto> Comments { get; set; }
 
         public ActivityDto()
         {
             Attendees = new Collection<AttendeeDto>();
+            Comments = new Collection<CommentDto>();
         }
     }
 }

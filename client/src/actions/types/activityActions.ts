@@ -1,4 +1,6 @@
+import { HubConnection } from "@microsoft/signalr";
 import { IActivity } from "../../models/activity";
+import { IComment } from "./../../models/activity";
 import { ActionTypes } from ".";
 
 export type IActivityActions =
@@ -7,6 +9,8 @@ export type IActivityActions =
   | ICreateActivityAction
   | IEditActivityAction
   | IDeleteActivityAction
+  | ISetChatHubConnectionAction
+  | INewCommentAction
   | ISetActivityLoadingStatusAction
   | ISetActivitiesLoadingStatusAction
   | ISetActivitySubmittingStatusAction
@@ -35,6 +39,16 @@ export interface IEditActivityAction {
 export interface IDeleteActivityAction {
   type: ActionTypes.DELETE_ACTIVITY;
   payload: string;
+}
+
+export interface ISetChatHubConnectionAction {
+  type: ActionTypes.CHAT_HUB_CONNECTION;
+  payload: HubConnection | null;
+}
+
+export interface INewCommentAction {
+  type: ActionTypes.NEW_COMMENT;
+  payload: IComment;
 }
 
 export interface ISetActivityLoadingStatusAction {

@@ -30,19 +30,19 @@ export interface ICar {
 In the parent component (`CarList.tsx`):
 
 ```tsx
-import React from 'react';
-import CarItem from './CarItem';
-import { ICar } from './car';
+import React from "react";
+import CarItem from "./CarItem";
+import { ICar } from "./car";
 
 const car1: ICar = {
-  color: 'blue',
-  model: 'BMW',
-  topSpeed: 200
+  color: "blue",
+  model: "BMW",
+  topSpeed: 200,
 };
 
 const car2: ICar = {
-  color: 'white',
-  model: 'Benz'
+  color: "white",
+  model: "Benz",
 };
 
 const cars = [car1, car2];
@@ -50,7 +50,7 @@ const cars = [car1, car2];
 const CarList: React.FC = () => {
   return (
     <ul>
-      {cars.map(car => (
+      {cars.map((car) => (
         <CarItem car={car} />
       ))}
     </ul>
@@ -63,8 +63,8 @@ export default CarList;
 In the child component (`CarItem.tsx`):
 
 ```tsx
-import React from 'react';
-import { ICar } from './car';
+import React from "react";
+import { ICar } from "./car";
 
 interface IProps {
   car: ICar;
@@ -125,3 +125,36 @@ From [here](https://react.semantic-ui.com/usage) copy `Default theme (CDN)` and 
   href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
 />
 ```
+
+# Adding Redux and folders structure
+
+### Adding Redux
+
+In the client folder install `redux`, `redux-thunk`, `react-redux`, `redux-devtools-extension`:
+
+```Dos
+npm i redux redux-thunk react-redux redux-devtools-extension
+```
+
+```Dos
+npm i @types/react-redux
+```
+
+### Folders structure
+
+![](/md/client_folders.jpg)
+
+# CRUD in React Redux Typescript
+
+### Typescript
+
+- `!` is a way to tell the `Typescript` compiler "this expression cannot be null or undefined here, so don't complain about the possibility of it being null or undefined."
+- `?` is to mark the parameter as optional in `Typescript`.
+
+### Resetting the database
+
+```dos
+dotnet ef database drop -p Persistence/ -s API/
+```
+
+Choose `y` and then `dotnet watch run` in the `API` project.

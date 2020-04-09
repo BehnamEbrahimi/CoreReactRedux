@@ -2,6 +2,7 @@ import { Dispatch } from "redux";
 import { toast } from "react-toastify";
 
 import agent from "../apis/agent";
+import { establishChatHubConnection } from "./../hubs/chat";
 import { history } from "./../index";
 import { IActivity } from "../models/activity";
 import { IStore } from "./../reducers/index";
@@ -12,6 +13,8 @@ import {
   ICreateActivityAction,
   IEditActivityAction,
   IDeleteActivityAction,
+  ISetChatHubConnectionAction,
+  INewCommentAction,
   ISetActivityLoadingStatusAction,
   ISetActivitiesLoadingStatusAction,
   ISetActivitySubmittingStatusAction,
@@ -98,6 +101,7 @@ export const createActivity = (newActivity: IActivity) => async (
     const attendees = [];
     attendees.push(attendee);
     newActivity.attendees = attendees;
+    newActivity.comments = [];
     newActivity.isHost = true;
 
     dispatch<ICreateActivityAction>({
@@ -227,6 +231,77 @@ export const unattendActivity = () => async (
     ex.response && console.log(ex.response.data);
     dispatch(setLoading(false));
     toast.error("Problem cancelling attendance");
+  }
+};
+
+// Create Chat Hub Connection
+export type ICreateChatHubConnection = (activityId: string) => void;
+export const createChatHubConnection = (activityId: string) => async (
+  dispatch: Dispatch,
+  getState: () => IStore
+) => {
+  const connection = await establishChatHubConnection(
+    activityId,
+    getState().user.user!.token,
+    (message) => {
+      toast.info(message);
+    },
+    (comment) => {
+      dispatch<INewCommentAction>({
+        type: ActionTypes.NEW_COMMENT,
+        payload: comment,
+      });
+    }
+  );
+
+  if (connection) {
+    dispatch<ISetChatHubConnectionAction>({
+      type: ActionTypes.CHAT_HUB_CONNECTION,
+      payload: connection,
+    });
+  }
+};
+
+// Destroy Chat Hub Connection
+export type IDestroyChatHubConnection = (activityId: string) => void;
+export const destroyChatHubConnection = (activityId: string) => async (
+  dispatch: Dispatch,
+  getState: () => IStore
+) => {
+  try {
+    await getState().activity.chatHubConnection?.invoke(
+      "RemoveFromGroup",
+      activityId
+    );
+    console.log(`Left from group ${activityId}`);
+
+    await getState().activity.chatHubConnection?.stop();
+    console.log("Connection stopped");
+
+    dispatch<ISetChatHubConnectionAction>({
+      type: ActionTypes.CHAT_HUB_CONNECTION,
+      payload: null,
+    });
+  } catch (ex) {
+    ex.response && console.log(ex.response.data);
+  }
+};
+
+// Add Comment
+export type IAddComment = (formData: any) => void;
+export const addComment = (formData: any) => async (
+  dispatch: Dispatch,
+  getState: () => IStore
+) => {
+  formData.id = getState().activity.activity!.id;
+
+  try {
+    await getState().activity.chatHubConnection!.invoke(
+      "SendComment",
+      formData
+    );
+  } catch (ex) {
+    ex.response && console.log(ex.response.data);
   }
 };
 

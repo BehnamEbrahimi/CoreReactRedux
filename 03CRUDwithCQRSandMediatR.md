@@ -135,7 +135,7 @@ public class CustomController : ControllerBase
 }
 ```
 
-3. For each operation for any specific resource, create a c# class with the name of the operation.
+3. For each operation for any specific resource, create a c# class with the name of the operation. Note that the name of method is not important in the API controllers because the route matching is done by the route, route parameters and the type of request.
 1. Type the `qhandler` or `chandler` depending of the type of the operation and in case of `qhandler`, specify the return-type.
 1. Complete the `Query` or `Command` class. This is the class that an instance of will be passed to the mediator. So, based on what you want to get in the handler, enter the properties.
 1. Complete the handler logic.

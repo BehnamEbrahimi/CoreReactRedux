@@ -10,6 +10,7 @@ namespace Persistence
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Attendee> Attendees { get; set; }
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         public DataContext(DbContextOptions options) : base(options)
         {

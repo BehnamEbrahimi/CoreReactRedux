@@ -10,11 +10,13 @@ namespace Domain
         public string Bio { get; set; }
         public ICollection<Attendee> Attendees { get; set; }
         public ICollection<Photo> Photos { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
         public AppUser()
         {
             Attendees = new Collection<Attendee>();
             Photos = new Collection<Photo>();
+            Comments = new Collection<Comment>();
         }
     }
 }

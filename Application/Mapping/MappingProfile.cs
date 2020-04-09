@@ -9,6 +9,11 @@ namespace Application.Mapping
     {
         public MappingProfile()
         {
+
+            CreateMap<Comment, CommentDto>()
+                .ForMember(cd => cd.Username, opt => opt.MapFrom(c => c.Author.UserName))
+                .ForMember(cd => cd.DisplayName, opt => opt.MapFrom(c => c.Author.DisplayName))
+                .ForMember(cd => cd.Image, opt => opt.MapFrom(c => c.Author.Photos.FirstOrDefault(p => p.IsMain).Url));
             CreateMap<Photo, PhotoDto>();
             CreateMap<Activity, ActivityDto>();
             CreateMap<Attendee, AttendeeDto>()

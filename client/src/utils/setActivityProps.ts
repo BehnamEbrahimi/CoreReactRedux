@@ -9,5 +9,8 @@ export const setActivityProps = (activity: IActivity, user: IUser) => {
   activity.isHost = activity.attendees.some(
     (a) => a.username === user.username && a.isHost
   );
+  activity.comments = activity.comments.sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  );
   return activity;
 };

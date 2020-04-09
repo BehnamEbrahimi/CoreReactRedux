@@ -31,6 +31,7 @@ namespace Application.Activities
                     .Include(a => a.Attendees)
                         .ThenInclude(at => at.AppUser)
                             .ThenInclude(u => u.Photos)
+                    .Include(a => a.Comments)
                     .ToListAsync();
 
                 return _mapper.Map<List<Activity>, List<ActivityDto>>(activities);

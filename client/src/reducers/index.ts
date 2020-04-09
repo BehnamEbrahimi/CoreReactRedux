@@ -1,5 +1,6 @@
 import { IProfile } from "./../models/profile";
 import { AxiosResponse } from "axios";
+import { HubConnection } from "@microsoft/signalr";
 import { combineReducers } from "redux";
 import { IUser } from "./../models/user";
 import { IActivity } from "../models/activity";
@@ -29,6 +30,7 @@ export interface IStore {
   activity: {
     activities: IActivity[];
     activity: IActivity | null;
+    chatHubConnection: HubConnection | null;
     loadingInitial: boolean;
     loading: boolean;
     submitting: boolean;

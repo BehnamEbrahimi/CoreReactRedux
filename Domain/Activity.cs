@@ -14,10 +14,12 @@ namespace Domain
         public string City { get; set; }
         public string Venue { get; set; }
         public ICollection<Attendee> Attendees { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
         public Activity()
         {
             Attendees = new Collection<Attendee>();
+            Comments = new Collection<Comment>();
         }
     }
 }
