@@ -4,6 +4,7 @@ import { ActionTypes } from ".";
 
 export type IProfileActions =
   | ISetCurrentProfileAction
+  | IEditProfileAction
   | IUploadedPhotoAction
   | IMainPhotoAction
   | IUpdateProfilePhotosAction
@@ -14,6 +15,11 @@ export type IProfileActions =
 export interface ISetCurrentProfileAction {
   type: ActionTypes.CURRENT_PROFILE;
   payload: { profile: IProfile | null; isCurrentUser: boolean };
+}
+
+export interface IEditProfileAction {
+  type: ActionTypes.EDIT_PROFILE;
+  payload: Partial<IProfile>;
 }
 
 export interface IUploadedPhotoAction {

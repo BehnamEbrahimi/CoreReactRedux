@@ -1,12 +1,13 @@
 import { AxiosResponse } from "axios";
 import { ActionTypes } from ".";
 import { IUser } from "../../models/user";
-import { IMainPhotoAction } from "./profileActions";
+import { IMainPhotoAction, IEditProfileAction } from "./profileActions";
 
 export type IUserActions =
   | ISetUserAction
   | ISetAuthErrorAction
-  | IMainPhotoAction;
+  | IMainPhotoAction
+  | IEditProfileAction;
 
 export interface ISetUserAction {
   type: ActionTypes.USER;

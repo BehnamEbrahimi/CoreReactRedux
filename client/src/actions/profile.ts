@@ -2,11 +2,12 @@ import { Dispatch } from "redux";
 import { toast } from "react-toastify";
 
 import agent from "../apis/agent";
-import { IPhoto } from "../models/profile";
+import { IPhoto, IProfile } from "../models/profile";
 import { IStore } from "./../reducers/index";
 import { ActionTypes } from "./types";
 import {
   ISetCurrentProfileAction,
+  IEditProfileAction,
   ISetProfileLoadingStatusAction,
   ISetUploadingStatusAction,
   ISetPhotoOperationStatusAction,
@@ -37,6 +38,24 @@ export const loadProfile = (username: string) => async (
   } catch (ex) {
     ex.response && console.log(ex.response.data);
     dispatch(setProfileLoadingStatus(false));
+  }
+};
+
+// Edit Profile
+export type IEditProfile = (profile: Partial<IProfile>) => void;
+export const editProfile = (profile: Partial<IProfile>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    await agent.Profiles.updateProfile(profile);
+
+    dispatch<IEditProfileAction>({
+      type: ActionTypes.EDIT_PROFILE,
+      payload: profile,
+    });
+  } catch (ex) {
+    ex.response && console.log(ex.response.data);
+    toast.error("Problem updating profile");
   }
 };
 

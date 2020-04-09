@@ -38,6 +38,17 @@ export default function (
         },
       };
 
+    case ActionTypes.EDIT_PROFILE:
+      return {
+        ...state,
+        user: {
+          username: state.user!.username,
+          displayName: action.payload.displayName || state.user!.displayName,
+          token: state.user!.token,
+          image: state.user!.image,
+        },
+      };
+
     default:
       return state;
   }

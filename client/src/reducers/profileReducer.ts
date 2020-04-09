@@ -22,6 +22,19 @@ export default function (
         isCurrentUser: action.payload.isCurrentUser,
       };
 
+    case ActionTypes.EDIT_PROFILE:
+      return {
+        ...state,
+        profile: {
+          username: state.profile!.username,
+          displayName: state.profile!.displayName,
+          bio: state.profile!.bio,
+          image: state.profile!.image,
+          photos: state.profile!.photos,
+          ...action.payload,
+        },
+      };
+
     case ActionTypes.UPLOADED_PHOTO:
       return {
         ...state,
