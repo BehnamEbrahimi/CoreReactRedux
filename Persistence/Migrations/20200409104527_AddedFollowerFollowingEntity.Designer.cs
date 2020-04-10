@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200409104527_AddedFollowerFollowingEntity")]
+    partial class AddedFollowerFollowingEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,7 +165,7 @@ namespace Persistence.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("Domain.Follow", b =>
+            modelBuilder.Entity("Domain.FollowerFollowing", b =>
                 {
                     b.Property<string>("FollowerId")
                         .HasColumnType("TEXT");
@@ -175,7 +177,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("FollowingId");
 
-                    b.ToTable("Follows");
+                    b.ToTable("FollowerFollowings");
                 });
 
             modelBuilder.Entity("Domain.Photo", b =>
@@ -390,7 +392,7 @@ namespace Persistence.Migrations
                         .HasForeignKey("AuthorId");
                 });
 
-            modelBuilder.Entity("Domain.Follow", b =>
+            modelBuilder.Entity("Domain.FollowerFollowing", b =>
                 {
                     b.HasOne("Domain.AppUser", "Follower")
                         .WithMany("Followings")

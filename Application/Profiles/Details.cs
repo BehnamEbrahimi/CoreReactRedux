@@ -1,10 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Resources;
+using Application.Types;
 using AutoMapper;
-using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -32,17 +31,15 @@ namespace Application.Profiles
             public async Task<ProfileDto> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _context.Users
-                                    .Include(u => u.Photos)
-                                    .SingleOrDefaultAsync(u => u.UserName == request.Username);
+                    .Include(u => u.Photos)
+                    .Include(u => u.Followers)
+                    .Include(u => u.Followings)
+                    .SingleOrDefaultAsync(u => u.UserName == request.Username);
 
-                return new ProfileDto
-                {
-                    DisplayName = user.DisplayName,
-                    Username = user.UserName,
-                    Image = user.Photos.FirstOrDefault(p => p.IsMain)?.Url,
-                    Photos = _mapper.Map<ICollection<Photo>, ICollection<PhotoDto>>(user.Photos),
-                    Bio = user.Bio
-                };
+                if (user == null)
+                    throw new RestException(HttpStatusCode.NotFound, new { User = "Not found" });
+
+                return _mapper.Map<ProfileDto>(user);
             }
         }
     }

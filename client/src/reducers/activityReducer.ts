@@ -64,17 +64,7 @@ export default function (
       return {
         ...state,
         activity: {
-          // for some reason, TS complains about spreading object
-          id: state.activity!.id,
-          title: state.activity!.title,
-          description: state.activity!.description,
-          category: state.activity!.category,
-          date: state.activity!.date,
-          city: state.activity!.city,
-          venue: state.activity!.venue,
-          isGoing: state.activity!.isGoing,
-          isHost: state.activity!.isHost,
-          attendees: state.activity!.attendees,
+          ...state.activity!,
           comments: [...state.activity!.comments, action.payload],
         },
       };

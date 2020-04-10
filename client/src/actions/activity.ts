@@ -46,7 +46,7 @@ export const loadActivities = () => async (
   } catch (ex) {
     ex.response && console.log(ex.response.data);
     dispatch(setLoadingInitial(false));
-    toast.error("Error!");
+    toast.error("Problem loading activities");
   }
 };
 

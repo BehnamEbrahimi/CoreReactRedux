@@ -8,12 +8,17 @@ import { ActionTypes } from "./types";
 import {
   ISetCurrentProfileAction,
   IEditProfileAction,
+  IUploadedPhotoAction,
+  IMainPhotoAction,
+  IUpdateProfilePhotosAction,
+  IDeletePhotoAction,
+  IFollowAction,
+  IUnfollowAction,
+  IFollowsAction,
+  IActiveTabAction,
   ISetProfileLoadingStatusAction,
   ISetUploadingStatusAction,
-  ISetPhotoOperationStatusAction,
-  IMainPhotoAction,
-  IUploadedPhotoAction,
-  IUpdateProfilePhotosAction,
+  ISetProfileOperationStatusAction,
 } from "./types/profileActions";
 
 // Load Profile
@@ -92,7 +97,7 @@ export const setMainPhoto = (photo: IPhoto) => async (
   dispatch: Dispatch,
   getState: () => IStore
 ) => {
-  dispatch(setPhotoOperationStatus(true));
+  dispatch(setProfileOperationStatus(true));
   try {
     await agent.Profiles.setMainPhoto(photo.id);
 
@@ -110,40 +115,104 @@ export const setMainPhoto = (photo: IPhoto) => async (
       payload: [...profilePhotos],
     });
 
-    dispatch(setPhotoOperationStatus(false));
+    dispatch(setProfileOperationStatus(false));
   } catch (ex) {
     ex.response && console.log(ex.response.data);
-    dispatch(setPhotoOperationStatus(false));
+    dispatch(setProfileOperationStatus(false));
     toast.error("Problem setting photo as main");
   }
 };
 
 // Delete Photo
 export type IDeletePhoto = (photo: IPhoto) => void;
-export const deletePhoto = (photo: IPhoto) => async (
-  dispatch: Dispatch,
-  getState: () => IStore
-) => {
-  dispatch(setPhotoOperationStatus(true));
+export const deletePhoto = (photo: IPhoto) => async (dispatch: Dispatch) => {
+  dispatch(setProfileOperationStatus(true));
   try {
     await agent.Profiles.deletePhoto(photo.id);
 
-    const profilePhotos = getState().profile.profile!.photos.filter(
-      (p) => p.id !== photo.id
-    );
-
-    dispatch<IUpdateProfilePhotosAction>({
-      type: ActionTypes.UPDATE_PROFILE_PHOTOS,
-      payload: [...profilePhotos],
+    dispatch<IDeletePhotoAction>({
+      type: ActionTypes.DELETE_PHOTO,
+      payload: photo.id,
     });
 
-    dispatch(setPhotoOperationStatus(false));
+    dispatch(setProfileOperationStatus(false));
   } catch (ex) {
     ex.response && console.log(ex.response.data);
-    dispatch(setPhotoOperationStatus(false));
+    dispatch(setProfileOperationStatus(false));
     toast.error("Problem deleting the photo");
   }
 };
+
+// Follow
+export type IFollow = (username: string) => void;
+export const follow = (username: string) => async (dispatch: Dispatch) => {
+  dispatch(setProfileOperationStatus(true));
+  try {
+    await agent.Profiles.follow(username);
+
+    dispatch<IFollowAction>({
+      type: ActionTypes.FOLLOW,
+    });
+
+    dispatch(setProfileOperationStatus(false));
+  } catch (ex) {
+    ex.response && console.log(ex.response.data);
+    dispatch(setProfileOperationStatus(false));
+    toast.error("Problem following user");
+  }
+};
+
+// UnFollow
+export type IUnfollow = (username: string) => void;
+export const unfollow = (username: string) => async (dispatch: Dispatch) => {
+  dispatch(setProfileOperationStatus(true));
+  try {
+    await agent.Profiles.unfollow(username);
+
+    dispatch<IUnfollowAction>({
+      type: ActionTypes.UNFOLLOW,
+    });
+
+    dispatch(setProfileOperationStatus(false));
+  } catch (ex) {
+    ex.response && console.log(ex.response.data);
+    dispatch(setProfileOperationStatus(false));
+    toast.error("Problem unfollowing user");
+  }
+};
+
+// Load Follows
+export type ILoadFollows = (listOf: string) => void;
+export const loadFollows = (listOf: string) => async (
+  dispatch: Dispatch,
+  getState: () => IStore
+) => {
+  dispatch(setProfileOperationStatus(true));
+  try {
+    const profiles = await agent.Profiles.listFollows(
+      getState().profile.profile!.username,
+      listOf
+    );
+
+    dispatch<IFollowsAction>({
+      type: ActionTypes.FOLLOWS,
+      payload: profiles,
+    });
+
+    dispatch(setProfileOperationStatus(false));
+  } catch (ex) {
+    ex.response && console.log(ex.response.data);
+    dispatch(setProfileOperationStatus(false));
+    toast.error("Problem loading follows");
+  }
+};
+
+// Set Active Tab
+export type ISetActiveTab = (tab: string) => void;
+export const setActiveTab = (tab: string): IActiveTabAction => ({
+  type: ActionTypes.ACTIVE_TAB,
+  payload: tab,
+});
 
 // Set Profile Loading Status
 export type ISetProfileLoadingStatus = (loadingProfile: boolean) => void;
@@ -163,11 +232,11 @@ export const setUploadingStatus = (
   payload: uploading,
 });
 
-// Set Submitting
-export type ISetPhotoOperationStatus = (loading: boolean) => void;
-export const setPhotoOperationStatus = (
+// Set Operation Status
+export type ISetProfileOperationStatus = (loading: boolean) => void;
+export const setProfileOperationStatus = (
   loading: boolean
-): ISetPhotoOperationStatusAction => ({
-  type: ActionTypes.PHOTO_OPERATION_STATUS,
+): ISetProfileOperationStatusAction => ({
+  type: ActionTypes.PROFILE_OPERATION_STATUS,
   payload: loading,
 });

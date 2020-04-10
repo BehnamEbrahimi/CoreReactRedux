@@ -11,6 +11,7 @@ namespace Persistence
         public DbSet<Attendee> Attendees { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Follow> Follows { get; set; }
 
         public DataContext(DbContextOptions options) : base(options)
         {
@@ -28,6 +29,20 @@ namespace Persistence
                 );
 
             builder.Entity<Attendee>().HasKey(at => new { at.AppUserId, at.ActivityId });
+
+            builder.Entity<Follow>().HasKey(f => new { f.FollowerId, f.FollowingId });
+
+            builder.Entity<AppUser>()
+                .HasMany(u => u.Followers)
+                .WithOne(f => f.Following)
+                .HasForeignKey(f => f.FollowingId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<AppUser>()
+                .HasMany(u => u.Followings)
+                .WithOne(f => f.Follower)
+                .HasForeignKey(f => f.FollowerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 

@@ -8,9 +8,14 @@ export type IProfileActions =
   | IUploadedPhotoAction
   | IMainPhotoAction
   | IUpdateProfilePhotosAction
+  | IDeletePhotoAction
+  | IFollowAction
+  | IUnfollowAction
+  | IFollowsAction
+  | IActiveTabAction
   | ISetProfileLoadingStatusAction
   | ISetUploadingStatusAction
-  | ISetPhotoOperationStatusAction;
+  | ISetProfileOperationStatusAction;
 
 export interface ISetCurrentProfileAction {
   type: ActionTypes.CURRENT_PROFILE;
@@ -37,6 +42,29 @@ export interface IUpdateProfilePhotosAction {
   payload: IPhoto[];
 }
 
+export interface IDeletePhotoAction {
+  type: ActionTypes.DELETE_PHOTO;
+  payload: string;
+}
+
+export interface IFollowAction {
+  type: ActionTypes.FOLLOW;
+}
+
+export interface IUnfollowAction {
+  type: ActionTypes.UNFOLLOW;
+}
+
+export interface IFollowsAction {
+  type: ActionTypes.FOLLOWS;
+  payload: IProfile[];
+}
+
+export interface IActiveTabAction {
+  type: ActionTypes.ACTIVE_TAB;
+  payload: string;
+}
+
 export interface ISetProfileLoadingStatusAction {
   type: ActionTypes.PROFILE_LOADING_STATUS;
   payload: boolean;
@@ -47,7 +75,7 @@ export interface ISetUploadingStatusAction {
   payload: boolean;
 }
 
-export interface ISetPhotoOperationStatusAction {
-  type: ActionTypes.PHOTO_OPERATION_STATUS;
+export interface ISetProfileOperationStatusAction {
+  type: ActionTypes.PROFILE_OPERATION_STATUS;
   payload: boolean;
 }

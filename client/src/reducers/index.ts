@@ -26,6 +26,8 @@ export interface IStore {
     loading: boolean;
     uploadingPhoto: boolean;
     isCurrentUser: boolean;
+    follows: IProfile[];
+    activeTab: string;
   };
   activity: {
     activities: IActivity[];

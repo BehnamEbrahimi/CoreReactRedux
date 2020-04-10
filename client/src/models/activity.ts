@@ -17,6 +17,7 @@ export interface IAttendee {
   displayName: string;
   image: string;
   isHost: boolean;
+  isFollowed: boolean;
 }
 
 export interface IComment {

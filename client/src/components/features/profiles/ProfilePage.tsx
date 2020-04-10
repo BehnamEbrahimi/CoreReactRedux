@@ -6,7 +6,14 @@ import { Grid } from "semantic-ui-react";
 import ProfileHeader from "./ProfileHeader";
 import Loading from "../../layout/Loading";
 import ProfileContent from "./ProfileContent";
-import { loadProfile, ILoadProfile } from "../../../actions";
+import {
+  loadProfile,
+  ILoadProfile,
+  setActiveTab,
+  ISetActiveTab,
+  loadFollows,
+  ILoadFollows,
+} from "../../../actions";
 import { IStore } from "../../../reducers";
 
 interface RouteParams {
@@ -15,11 +22,15 @@ interface RouteParams {
 
 interface IProps extends RouteComponentProps<RouteParams> {
   loadProfile: ILoadProfile;
+  loadFollows: ILoadFollows;
+  setActiveTab: ISetActiveTab;
   loadingProfile: boolean;
 }
 
 const ProfilePage: React.FC<IProps> = ({
   loadProfile,
+  loadFollows,
+  setActiveTab,
   loadingProfile,
   match,
 }) => {
@@ -33,7 +44,7 @@ const ProfilePage: React.FC<IProps> = ({
     <Grid>
       <Grid.Column width={16}>
         <ProfileHeader />
-        <ProfileContent />
+        <ProfileContent loadFollows={loadFollows} setActiveTab={setActiveTab} />
       </Grid.Column>
     </Grid>
   );
@@ -43,4 +54,8 @@ const mapStateToProps = ({ profile: { loadingProfile } }: IStore) => ({
   loadingProfile,
 });
 
-export default connect(mapStateToProps, { loadProfile })(ProfilePage);
+export default connect(mapStateToProps, {
+  loadProfile,
+  loadFollows,
+  setActiveTab,
+})(ProfilePage);

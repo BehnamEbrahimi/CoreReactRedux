@@ -31,9 +31,7 @@ export default function (
       return {
         ...state,
         user: {
-          username: state.user!.username,
-          displayName: state.user!.displayName,
-          token: state.user!.token,
+          ...state.user!,
           image: action.payload.url,
         },
       };
@@ -42,10 +40,8 @@ export default function (
       return {
         ...state,
         user: {
-          username: state.user!.username,
+          ...state.user!,
           displayName: action.payload.displayName || state.user!.displayName,
-          token: state.user!.token,
-          image: state.user!.image,
         },
       };
 

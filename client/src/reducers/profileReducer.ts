@@ -8,6 +8,8 @@ const initialState: IStore["profile"] = {
   loading: false,
   uploadingPhoto: false,
   isCurrentUser: false,
+  follows: [],
+  activeTab: "about",
 };
 
 export default function (
@@ -26,11 +28,7 @@ export default function (
       return {
         ...state,
         profile: {
-          username: state.profile!.username,
-          displayName: state.profile!.displayName,
-          bio: state.profile!.bio,
-          image: state.profile!.image,
-          photos: state.profile!.photos,
+          ...state.profile!,
           ...action.payload,
         },
       };
@@ -39,23 +37,8 @@ export default function (
       return {
         ...state,
         profile: {
-          username: state.profile!.username,
-          displayName: state.profile!.displayName,
-          bio: state.profile!.bio,
-          image: state.profile!.image,
+          ...state.profile!,
           photos: [...state.profile!.photos, action.payload],
-        },
-      };
-
-    case ActionTypes.UPDATE_PROFILE_PHOTOS:
-      return {
-        ...state,
-        profile: {
-          username: state.profile!.username,
-          displayName: state.profile!.displayName,
-          bio: state.profile!.bio,
-          image: state.profile!.image,
-          photos: action.payload,
         },
       };
 
@@ -63,12 +46,61 @@ export default function (
       return {
         ...state,
         profile: {
-          username: state.profile!.username,
-          displayName: state.profile!.displayName,
-          bio: state.profile!.bio,
+          ...state.profile!,
           image: action.payload.url,
-          photos: state.profile!.photos,
         },
+      };
+
+    case ActionTypes.UPDATE_PROFILE_PHOTOS:
+      return {
+        ...state,
+        profile: {
+          ...state.profile!,
+          photos: action.payload,
+        },
+      };
+
+    case ActionTypes.DELETE_PHOTO:
+      return {
+        ...state,
+        profile: {
+          ...state.profile!,
+          photos: [
+            ...state.profile!.photos.filter((p) => p.id !== action.payload),
+          ],
+        },
+      };
+
+    case ActionTypes.FOLLOW:
+      return {
+        ...state,
+        profile: {
+          ...state.profile!,
+          isFollowed: true,
+          followersCount: state.profile!.followersCount + 1,
+        },
+      };
+
+    case ActionTypes.UNFOLLOW:
+      return {
+        ...state,
+        profile: {
+          ...state.profile!,
+          isFollowed: false,
+          followersCount: state.profile!.followersCount - 1,
+        },
+      };
+
+    case ActionTypes.FOLLOWS:
+      return {
+        ...state,
+        follows: action.payload,
+      };
+
+    case ActionTypes.ACTIVE_TAB:
+      return {
+        ...state,
+        activeTab: action.payload,
       };
 
     case ActionTypes.PROFILE_LOADING_STATUS:
@@ -77,7 +109,7 @@ export default function (
     case ActionTypes.UPLOADING_STATUS:
       return { ...state, uploadingPhoto: action.payload };
 
-    case ActionTypes.PHOTO_OPERATION_STATUS:
+    case ActionTypes.PROFILE_OPERATION_STATUS:
       return { ...state, loading: action.payload };
 
     default:
