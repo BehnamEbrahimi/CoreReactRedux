@@ -8,6 +8,7 @@ import { IActivity } from "../models/activity";
 import { IStore } from "./../reducers/index";
 import { ActionTypes } from "./types";
 import {
+  IEmptyActivitiesAction,
   ILoadActivitiesAction,
   ILoadActivityAction,
   ICreateActivityAction,
@@ -15,6 +16,8 @@ import {
   IDeleteActivityAction,
   ISetChatHubConnectionAction,
   INewCommentAction,
+  IFilterAction,
+  IActivityPageAction,
   ISetActivityLoadingStatusAction,
   ISetActivitiesLoadingStatusAction,
   ISetActivitySubmittingStatusAction,
@@ -22,6 +25,8 @@ import {
 } from "./types/activityActions";
 import { setActivityProps } from "../utils/setActivityProps";
 import { createAttendee } from "../utils/createAttendee";
+import { getAxiosParams } from "./../utils/getAxiosParams";
+import { getTotalPage } from "./../utils/getTotalPage";
 
 // Load Activities
 export type ILoadActivities = () => void;
@@ -32,7 +37,14 @@ export const loadActivities = () => async (
   dispatch(setLoadingInitial(true));
 
   try {
-    const activities = await agent.Activities.list();
+    const params = getAxiosParams(
+      getState().activity.page,
+      getState().activity.filter
+    );
+    const {
+      items: activities,
+      totalItems: activityCount,
+    } = await agent.Activities.list(params);
 
     activities.forEach((activity) => {
       setActivityProps(activity, getState().user.user!);
@@ -40,7 +52,11 @@ export const loadActivities = () => async (
 
     dispatch<ILoadActivitiesAction>({
       type: ActionTypes.ACTIVITIES_LIST,
-      payload: activities,
+      payload: {
+        activities,
+        activityCount,
+        totalPages: getTotalPage(activityCount),
+      },
     });
     dispatch(setLoadingInitial(false));
   } catch (ex) {
@@ -49,6 +65,12 @@ export const loadActivities = () => async (
     toast.error("Problem loading activities");
   }
 };
+
+// Empty Activities
+export type IEmptyActivities = () => void;
+export const emptyActivities = (): IEmptyActivitiesAction => ({
+  type: ActionTypes.EMPTY_ACTIVITIES,
+});
 
 // Load Activity
 export type ILoadActivity = (id: string) => void;
@@ -304,6 +326,53 @@ export const addComment = (formData: any) => async (
     ex.response && console.log(ex.response.data);
   }
 };
+
+// Set Filter
+export type ISetFilter = (filter: string, value: string | Date) => void;
+export const setFilter = (filter: string, value: string | Date) => async (
+  dispatch: Dispatch,
+  getState: () => IStore
+) => {
+  dispatch(emptyActivities());
+
+  let payload = {
+    all: false,
+    isGoing: false,
+    isHost: false,
+    startDate: getState().activity.filter.startDate,
+  };
+
+  if (filter === "startDate" && typeof value === "object") {
+    dispatch<IFilterAction>({
+      type: ActionTypes.ACTIVITY_FILTER,
+      payload: { ...getState().activity.filter, [filter]: value },
+    });
+  } else {
+    dispatch<IFilterAction>({
+      type: ActionTypes.ACTIVITY_FILTER,
+      payload: { ...payload, [filter]: value === "true" },
+    });
+  }
+};
+
+// Reset Filter
+export type IResetFilters = () => void;
+export const resetFilters = (): IFilterAction => ({
+  type: ActionTypes.ACTIVITY_FILTER,
+  payload: {
+    all: true,
+    isGoing: false,
+    isHost: false,
+    startDate: new Date(),
+  },
+});
+
+// Set Page
+export type ISetPage = (page: number) => void;
+export const setPage = (page: number): IActivityPageAction => ({
+  type: ActionTypes.ACTIVITY_PAGE,
+  payload: page,
+});
 
 // Set Loading
 export type ISetLoading = (loading: boolean) => void;

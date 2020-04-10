@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Profiles;
 using Application.Resources;
@@ -18,6 +19,12 @@ namespace API.Controllers
         public async Task<ActionResult<Unit>> Edit(Edit.Command command)
         {
             return await Mediator.Send(command);
+        }
+
+        [HttpGet("{username}/activities")]
+        public async Task<ActionResult<List<UserActivityDto>>> GetUserActivities(string username, string filter)
+        {
+            return await Mediator.Send(new ListActivities.Query { Username = username, Filter = filter });
         }
     }
 }

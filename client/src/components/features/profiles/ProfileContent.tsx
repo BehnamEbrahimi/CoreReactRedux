@@ -4,6 +4,7 @@ import { Tab } from "semantic-ui-react";
 import ProfilePhotos from "./ProfilePhotos";
 import ProfileDescription from "./ProfileDescription";
 import ProfileFollows from "./ProfileFollows";
+import ProfileActivities from "./ProfileActivities";
 import { ILoadFollows, ISetActiveTab } from "../../../actions";
 
 interface IProps {
@@ -16,7 +17,7 @@ const panes = [
   { menuItem: "Photos", render: () => <ProfilePhotos /> },
   {
     menuItem: "Activities",
-    render: () => <Tab.Pane>Activities content</Tab.Pane>,
+    render: () => <ProfileActivities />,
   },
   { menuItem: "Followers", render: () => <ProfileFollows /> },
   { menuItem: "Following", render: () => <ProfileFollows /> },

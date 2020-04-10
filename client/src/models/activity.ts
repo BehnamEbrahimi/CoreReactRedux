@@ -51,3 +51,15 @@ export class ActivityFormValues implements IActivityFormValues {
     Object.assign(this, init);
   }
 }
+
+export interface IActivityFilter {
+  all: boolean;
+  isGoing: boolean;
+  isHost: boolean;
+  startDate: Date;
+}
+
+export interface IActivitiesEnvelope {
+  items: IActivity[];
+  totalItems: number;
+}

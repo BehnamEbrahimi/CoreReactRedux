@@ -16,9 +16,11 @@ import {
   IUnfollowAction,
   IFollowsAction,
   IActiveTabAction,
+  IUserActivitiesAction,
   ISetProfileLoadingStatusAction,
   ISetUploadingStatusAction,
   ISetProfileOperationStatusAction,
+  ISetActivitiesLoadingStatusAction,
 } from "./types/profileActions";
 
 // Load Profile
@@ -214,6 +216,28 @@ export const setActiveTab = (tab: string): IActiveTabAction => ({
   payload: tab,
 });
 
+// Load User Activities
+export type ILoadUserActivities = (username: string, filter?: string) => void;
+export const loadUserActivities = (username: string, filter?: string) => async (
+  dispatch: Dispatch
+) => {
+  dispatch(setActivitiesLoadingStatus(true));
+  try {
+    const activities = await agent.Profiles.listActivities(username, filter!);
+
+    dispatch<IUserActivitiesAction>({
+      type: ActionTypes.USER_ACTIVITIES,
+      payload: activities,
+    });
+
+    dispatch(setActivitiesLoadingStatus(false));
+  } catch (ex) {
+    ex.response && console.log(ex.response.data);
+    dispatch(setActivitiesLoadingStatus(false));
+    toast.error("Problem loading activities");
+  }
+};
+
 // Set Profile Loading Status
 export type ISetProfileLoadingStatus = (loadingProfile: boolean) => void;
 export const setProfileLoadingStatus = (
@@ -238,5 +262,14 @@ export const setProfileOperationStatus = (
   loading: boolean
 ): ISetProfileOperationStatusAction => ({
   type: ActionTypes.PROFILE_OPERATION_STATUS,
+  payload: loading,
+});
+
+// Set User Activities Loading Status
+export type ISetActivitiesLoadingStatus = (loading: boolean) => void;
+export const setActivitiesLoadingStatus = (
+  loading: boolean
+): ISetActivitiesLoadingStatusAction => ({
+  type: ActionTypes.USER_ACTIVITIES_LOADING_STATUS,
   payload: loading,
 });

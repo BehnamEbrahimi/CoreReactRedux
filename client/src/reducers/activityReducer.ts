@@ -10,6 +10,10 @@ const initialState: IStore["activity"] = {
   loading: false,
   submitting: false,
   target: "",
+  activityCount: 0,
+  page: 0,
+  totalPages: 0,
+  filter: { all: true, isGoing: false, isHost: false, startDate: new Date() },
 };
 
 export default function (
@@ -18,7 +22,19 @@ export default function (
 ): IStore["activity"] {
   switch (action.type) {
     case ActionTypes.ACTIVITIES_LIST:
-      return { ...state, activities: action.payload };
+      return {
+        ...state,
+        activities: [...state.activities, ...action.payload.activities],
+        activityCount: action.payload.activityCount,
+        totalPages: action.payload.totalPages,
+      };
+
+    case ActionTypes.EMPTY_ACTIVITIES:
+      return {
+        ...state,
+        activities: [],
+        page: 0,
+      };
 
     case ActionTypes.CURRENT_ACTIVITY:
       return {
@@ -67,6 +83,18 @@ export default function (
           ...state.activity!,
           comments: [...state.activity!.comments, action.payload],
         },
+      };
+
+    case ActionTypes.ACTIVITY_FILTER:
+      return {
+        ...state,
+        filter: action.payload,
+      };
+
+    case ActionTypes.ACTIVITY_PAGE:
+      return {
+        ...state,
+        page: action.payload,
       };
 
     case ActionTypes.ACTIVITY_LOADING_STATUS:

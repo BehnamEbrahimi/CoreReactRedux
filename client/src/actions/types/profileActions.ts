@@ -1,4 +1,4 @@
-import { IProfile } from "../../models/profile";
+import { IProfile, IUserActivity } from "../../models/profile";
 import { IPhoto } from "./../../models/profile";
 import { ActionTypes } from ".";
 
@@ -13,9 +13,11 @@ export type IProfileActions =
   | IUnfollowAction
   | IFollowsAction
   | IActiveTabAction
+  | IUserActivitiesAction
   | ISetProfileLoadingStatusAction
   | ISetUploadingStatusAction
-  | ISetProfileOperationStatusAction;
+  | ISetProfileOperationStatusAction
+  | ISetActivitiesLoadingStatusAction;
 
 export interface ISetCurrentProfileAction {
   type: ActionTypes.CURRENT_PROFILE;
@@ -65,6 +67,11 @@ export interface IActiveTabAction {
   payload: string;
 }
 
+export interface IUserActivitiesAction {
+  type: ActionTypes.USER_ACTIVITIES;
+  payload: IUserActivity[];
+}
+
 export interface ISetProfileLoadingStatusAction {
   type: ActionTypes.PROFILE_LOADING_STATUS;
   payload: boolean;
@@ -77,5 +84,10 @@ export interface ISetUploadingStatusAction {
 
 export interface ISetProfileOperationStatusAction {
   type: ActionTypes.PROFILE_OPERATION_STATUS;
+  payload: boolean;
+}
+
+export interface ISetActivitiesLoadingStatusAction {
+  type: ActionTypes.USER_ACTIVITIES_LOADING_STATUS;
   payload: boolean;
 }

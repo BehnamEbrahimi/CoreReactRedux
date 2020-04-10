@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.Activities;
 using Application.Resources;
@@ -12,9 +11,17 @@ namespace API.Controllers
     public class ActivitiesController : BaseController
     {
         [HttpGet]
-        public async Task<ActionResult<List<ActivityDto>>> List()
+        public async Task<ActionResult<EnvelopeDto<ActivityDto>>> List(int limit, int offset, bool? isGoing, bool? isHost, DateTime? startDate)
         {
-            return await Mediator.Send(new List.Query());
+            var query = new List.Query
+            {
+                Limit = limit,
+                Offset = offset,
+                IsGoing = isGoing,
+                IsHost = isHost,
+                StartDate = startDate ?? DateTime.Now,
+            };
+            return await Mediator.Send(query);
         }
 
         [HttpGet("{id}")]

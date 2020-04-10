@@ -10,6 +10,8 @@ const initialState: IStore["profile"] = {
   isCurrentUser: false,
   follows: [],
   activeTab: "about",
+  userActivities: [],
+  loadingActivities: false,
 };
 
 export default function (
@@ -103,6 +105,12 @@ export default function (
         activeTab: action.payload,
       };
 
+    case ActionTypes.USER_ACTIVITIES:
+      return {
+        ...state,
+        userActivities: action.payload,
+      };
+
     case ActionTypes.PROFILE_LOADING_STATUS:
       return { ...state, loadingProfile: action.payload };
 
@@ -111,6 +119,9 @@ export default function (
 
     case ActionTypes.PROFILE_OPERATION_STATUS:
       return { ...state, loading: action.payload };
+
+    case ActionTypes.USER_ACTIVITIES_LOADING_STATUS:
+      return { ...state, loadingActivities: action.payload };
 
     default:
       return state;

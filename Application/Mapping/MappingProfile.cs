@@ -10,6 +10,7 @@ namespace Application.Mapping
         public MappingProfile()
         {
             CreateMap<Activity, ActivityDto>();
+            CreateMap<Activity, UserActivityDto>();
             CreateMap<Attendee, AttendeeDto>()
                 .ForMember(ad => ad.Username, opt => opt.MapFrom(a => a.AppUser.UserName))
                 .ForMember(ad => ad.DisplayName, opt => opt.MapFrom(a => a.AppUser.DisplayName))
@@ -25,6 +26,7 @@ namespace Application.Mapping
                 .ForMember(p => p.FollowingsCount, opt => opt.MapFrom(u => u.Followings.Count()))
                 .ForMember(p => p.IsFollowed, opt => opt.MapFrom<AppUserToProfileDtoIsFollowedResolver>());
             CreateMap<Photo, PhotoDto>();
+            CreateMap(typeof(Envelope<>), typeof(EnvelopeDto<>));
         }
     }
 }

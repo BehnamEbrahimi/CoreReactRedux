@@ -1,9 +1,9 @@
-import { IProfile } from "./../models/profile";
 import { AxiosResponse } from "axios";
 import { HubConnection } from "@microsoft/signalr";
 import { combineReducers } from "redux";
 import { IUser } from "./../models/user";
-import { IActivity } from "../models/activity";
+import { IProfile, IUserActivity } from "./../models/profile";
+import { IActivity, IActivityFilter } from "../models/activity";
 import appReducer from "./appReducer";
 import userReducer from "./userReducer";
 import profileReducer from "./profileReducer";
@@ -28,6 +28,8 @@ export interface IStore {
     isCurrentUser: boolean;
     follows: IProfile[];
     activeTab: string;
+    userActivities: IUserActivity[];
+    loadingActivities: boolean;
   };
   activity: {
     activities: IActivity[];
@@ -37,6 +39,10 @@ export interface IStore {
     loading: boolean;
     submitting: boolean;
     target: string;
+    activityCount: number;
+    page: number;
+    totalPages: number;
+    filter: IActivityFilter;
   };
   modal: {
     open: boolean;

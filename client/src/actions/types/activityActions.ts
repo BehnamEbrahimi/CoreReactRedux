@@ -1,9 +1,10 @@
 import { HubConnection } from "@microsoft/signalr";
-import { IActivity } from "../../models/activity";
+import { IActivity, IActivityFilter } from "../../models/activity";
 import { IComment } from "./../../models/activity";
 import { ActionTypes } from ".";
 
 export type IActivityActions =
+  | IEmptyActivitiesAction
   | ILoadActivitiesAction
   | ILoadActivityAction
   | ICreateActivityAction
@@ -11,14 +12,24 @@ export type IActivityActions =
   | IDeleteActivityAction
   | ISetChatHubConnectionAction
   | INewCommentAction
+  | IFilterAction
+  | IActivityPageAction
   | ISetActivityLoadingStatusAction
   | ISetActivitiesLoadingStatusAction
   | ISetActivitySubmittingStatusAction
   | ISetTargetActvityAction;
 
+export interface IEmptyActivitiesAction {
+  type: ActionTypes.EMPTY_ACTIVITIES;
+}
+
 export interface ILoadActivitiesAction {
   type: ActionTypes.ACTIVITIES_LIST;
-  payload: IActivity[];
+  payload: {
+    activities: IActivity[];
+    activityCount: number;
+    totalPages: number;
+  };
 }
 
 export interface ILoadActivityAction {
@@ -49,6 +60,16 @@ export interface ISetChatHubConnectionAction {
 export interface INewCommentAction {
   type: ActionTypes.NEW_COMMENT;
   payload: IComment;
+}
+
+export interface IFilterAction {
+  type: ActionTypes.ACTIVITY_FILTER;
+  payload: IActivityFilter;
+}
+
+export interface IActivityPageAction {
+  type: ActionTypes.ACTIVITY_PAGE;
+  payload: number;
 }
 
 export interface ISetActivityLoadingStatusAction {
