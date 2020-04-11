@@ -5,7 +5,7 @@ import InfiniteScroll from "react-infinite-scroller";
 
 import ActivityList from "./ActivityList";
 import ActivityFilters from "./ActivityFilters";
-import Loading from "../../layout/Loading";
+import ActivityListItemPlaceholder from "./ActivityListItemPlaceholder";
 import { IActivity } from "../../../models/activity";
 import {
   loadActivities,
@@ -58,20 +58,21 @@ const ActivityDashboard: React.FC<IProps> = ({
     loadActivities();
   };
 
-  if (loadingInitial && page === 0)
-    return <Loading content="Loading activities" />;
-
   return (
     <Grid>
       <Grid.Column width={10}>
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={handleGetNext}
-          hasMore={!loadingNext && page + 1 < totalPages}
-          initialLoad={false}
-        >
-          <ActivityList />
-        </InfiniteScroll>
+        {loadingInitial && page === 0 ? (
+          <ActivityListItemPlaceholder />
+        ) : (
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={handleGetNext}
+            hasMore={!loadingNext && page + 1 < totalPages}
+            initialLoad={false}
+          >
+            <ActivityList />
+          </InfiniteScroll>
+        )}
       </Grid.Column>
       <Grid.Column width={6}>
         <ActivityFilters />

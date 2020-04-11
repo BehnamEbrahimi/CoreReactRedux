@@ -12,7 +12,7 @@ export const establishChatHubConnection = async (
   onReceiveComment: (comment: IComment) => any
 ): Promise<HubConnection | null> => {
   const chatHubConnection = new HubConnectionBuilder()
-    .withUrl("http://localhost:5000/chat", {
+    .withUrl(process.env.REACT_APP_API_CHAT_URL!, {
       accessTokenFactory: () => token,
     })
     .configureLogging(LogLevel.Information)

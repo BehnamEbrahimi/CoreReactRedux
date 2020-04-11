@@ -16,6 +16,8 @@ interface IProps {
 }
 
 const HomePage: React.FC<IProps> = ({ openModal, isLoggedIn, user }) => {
+  const token = window.localStorage.getItem("jwt");
+
   return (
     <Segment inverted textAlign="center" vertical className="masthead">
       <Container text>
@@ -28,7 +30,7 @@ const HomePage: React.FC<IProps> = ({ openModal, isLoggedIn, user }) => {
           />
           CRR
         </Header>
-        {isLoggedIn && user ? (
+        {isLoggedIn && user && token ? (
           <Fragment>
             <Header
               as="h2"
@@ -41,7 +43,7 @@ const HomePage: React.FC<IProps> = ({ openModal, isLoggedIn, user }) => {
           </Fragment>
         ) : (
           <Fragment>
-            <Header as="h2" inverted content={`Welcome to Reactivitities`} />
+            <Header as="h2" inverted content={`Welcome to CRR`} />
             <Button
               onClick={() => openModal(<LoginForm />)}
               size="huge"

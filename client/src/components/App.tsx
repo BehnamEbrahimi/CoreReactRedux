@@ -12,6 +12,7 @@ import { ToastContainer } from "react-toastify";
 import ModalContainer from "./common/ModalContainer";
 import NotFound from "./layout/NotFound";
 import Loading from "./layout/Loading";
+import PrivateRoute from "./layout/PrivateRoute";
 import HomePage from "./features/home/HomePage";
 import Navbar from "./features/nav/Navbar";
 import ActivityDashboard from "./features/activities/ActivityDashboard";
@@ -53,19 +54,26 @@ const App: React.FC<IProps & RouteComponentProps> = ({
             <Navbar />
             <Container style={{ marginTop: "7em" }}>
               <Switch>
-                <Route exact path="/activities" component={ActivityDashboard} />
-                <Route
+                <PrivateRoute
+                  exact
+                  path="/activities"
+                  render={() => <ActivityDashboard />}
+                />
+                <PrivateRoute
                   exact
                   path="/activities/:id"
                   component={ActivityDetails}
                 />
-                <Route
+                <PrivateRoute
                   key={location.key} // by this, when the location (which is a prop) changes, the component will be re-rendered
                   exact
                   path={["/createActivity", "/manage/:id"]}
                   component={ActivityForm}
                 />
-                <Route path="/profile/:username" component={ProfilePage} />
+                <PrivateRoute
+                  path="/profile/:username"
+                  component={ProfilePage}
+                />
                 <Route
                   component={NotFound} // Obviously, there is path for this component! And because there is no path, we cannot use exact and we must use Switch.
                 />

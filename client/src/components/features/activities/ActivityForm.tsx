@@ -95,12 +95,12 @@ const ActivityForm: React.FC<IProps & RouteComponentProps<DetailParams>> = ({
 
     if (!formData.id) {
       let newActivity = {
-        ...formData,
+        ...activity,
         id: uuid(),
       };
       createActivity(newActivity);
     } else {
-      editActivity(formData.id, formData);
+      editActivity(activity.id, activity);
     }
   };
 
