@@ -19,6 +19,7 @@ export interface IStore {
     user: IUser | null;
     isLoggedIn: boolean;
     error: AxiosResponse | null;
+    loading: boolean;
   };
   profile: {
     profile: IProfile | null;

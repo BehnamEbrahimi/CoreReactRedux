@@ -16,6 +16,13 @@ namespace API.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost("facebook")]
+        public async Task<ActionResult<UserDto>> FacebookLogin(FacebookLogin.Query accessToken)
+        {
+            return await Mediator.Send(accessToken);
+        }
+
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(Register.Command command)
         {

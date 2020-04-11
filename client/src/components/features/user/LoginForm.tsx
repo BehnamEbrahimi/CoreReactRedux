@@ -1,11 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Form as FinalForm, Field } from "react-final-form";
-import { Form, Button, Header } from "semantic-ui-react";
+import { Form, Button, Header, Divider } from "semantic-ui-react";
 import { combineValidators, isRequired } from "revalidate";
 import { AxiosResponse } from "axios";
+
 import TextInput from "../../common/TextInput";
 import ErrorMessage from "../../common/ErrorMessage";
+import SocialLogin from "./SocialLogin";
 import { IUserFormValues } from "../../../models/user";
 import { login, ILogin } from "../../../actions";
 import { IStore } from "../../../reducers";
@@ -37,7 +39,7 @@ const LoginForm: React.FC<IProps> = ({ login, submitError }) => {
         <Form onSubmit={handleSubmit} error>
           <Header
             as="h2"
-            content="Login to Reactivities"
+            content="Login to CRR"
             color="teal"
             textAlign="center"
           />
@@ -61,6 +63,8 @@ const LoginForm: React.FC<IProps> = ({ login, submitError }) => {
             content="Login"
             fluid
           />
+          <Divider horizontal>Or</Divider>
+          <SocialLogin />
         </Form>
       )}
     />

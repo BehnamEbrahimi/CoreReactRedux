@@ -8,7 +8,11 @@ import { history } from "./../index";
 import { ActionTypes } from "./types";
 import { IUserFormValues } from "./../models/user";
 import { IUser } from "../models/user";
-import { ISetUserAction, ISetAuthErrorAction } from "./types/userActions";
+import {
+  ISetUserAction,
+  ISetAuthErrorAction,
+  ISetFbLoginLoadingStatusAction,
+} from "./types/userActions";
 
 // Register
 export type IRegister = (userData: IUserFormValues) => void;
@@ -78,6 +82,29 @@ export const logout = () => (dispatch: Dispatch) => {
   history.push("/");
 };
 
+// Facebook Login
+export type IFbLogin = (response: any) => void;
+export const fbLogin = (response: any) => async (dispatch: Dispatch) => {
+  dispatch(setFbLoginLoadingStatus(true));
+
+  try {
+    const user = await agent.User.fbLogin(response.accessToken);
+
+    dispatch(setUser(user));
+
+    dispatch(setToken(user.token));
+
+    dispatch(closeModal());
+
+    dispatch(setFbLoginLoadingStatus(false));
+
+    history.push("/activities");
+  } catch (ex) {
+    ex.response && console.log(ex.response.data);
+    dispatch(setFbLoginLoadingStatus(false));
+  }
+};
+
 // Set User
 export type ISetUser = (user: IUser | null) => void;
 export const setUser = (user: IUser | null): ISetUserAction => ({
@@ -92,4 +119,13 @@ export const setAuthError = (
 ): ISetAuthErrorAction => ({
   type: ActionTypes.AUTH_ERROR,
   payload: err,
+});
+
+// Set FB Login Loading Status
+export type ISetFbLoginLoadingStatus = (loading: boolean) => void;
+export const setFbLoginLoadingStatus = (
+  loading: boolean
+): ISetFbLoginLoadingStatusAction => ({
+  type: ActionTypes.FB_LOGIN_LOADING_STATUS,
+  payload: loading,
 });

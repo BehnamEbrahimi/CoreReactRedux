@@ -6,6 +6,7 @@ const initialState: IStore["user"] = {
   user: null,
   isLoggedIn: false,
   error: null,
+  loading: false,
 };
 
 export default function (
@@ -25,6 +26,12 @@ export default function (
       return {
         ...state,
         error: action.payload,
+      };
+
+    case ActionTypes.FB_LOGIN_LOADING_STATUS:
+      return {
+        ...state,
+        loading: action.payload,
       };
 
     case ActionTypes.MAIN_PHOTO:

@@ -6,6 +6,7 @@ import { IMainPhotoAction, IEditProfileAction } from "./profileActions";
 export type IUserActions =
   | ISetUserAction
   | ISetAuthErrorAction
+  | ISetFbLoginLoadingStatusAction
   | IMainPhotoAction
   | IEditProfileAction;
 
@@ -17,4 +18,9 @@ export interface ISetUserAction {
 export interface ISetAuthErrorAction {
   type: ActionTypes.AUTH_ERROR;
   payload: AxiosResponse | null;
+}
+
+export interface ISetFbLoginLoadingStatusAction {
+  type: ActionTypes.FB_LOGIN_LOADING_STATUS;
+  payload: boolean;
 }
